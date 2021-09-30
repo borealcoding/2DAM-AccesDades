@@ -88,7 +88,7 @@ public class AE1_AccDatos {
         strNomFitxer = sc.nextLine();
         System.out.print("I amb quina extensio? (sempre comença amb un punt): ");
         strExtension = sc.nextLine();
-        strFitxer = strNomFitxer+strExtension;
+        strFitxer = strNomFitxer+"\\"+strExtension;
         f_element = new File(strDirectoriArrel+strFitxer);
         System.out.println(f_element);
         if (!f_element.exists()) {
