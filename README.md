@@ -1,7 +1,6 @@
 # 2DAM-AccesDades
 ## Eduardo Rua Chamorro | Florida Universitaria
-![made with java](https://forthebadge.com/generator/?raw=true "Made with Java")
-<a href="https://forthebadge.com/generator/"><img src="https://github.com/borealcoding/2DAM-AccesDades/blob/master/made-with-java.svg" width="350" alt="Make with Java"></a>
+<a href="https://forthebadge.com/generator/"><img src="https://github.com/borealcoding/2DAM-AccesDades/blob/master/made-with-java.svg" width="150" alt="Make with Java"></a>
 
 Enlace del repositorio general: https://github.com/borealcoding/2DAM-AccesDades
 Enlace de la rama A2, donde se ubica el ejercicio: https://github.com/borealcoding/2DAM-AccesDades/tree/A2
