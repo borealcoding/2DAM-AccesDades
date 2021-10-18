@@ -3,6 +3,7 @@
 <a href="https://forthebadge.com/generator/"><img src="https://github.com/borealcoding/2DAM-AccesDades/blob/master/made-with-java.svg" width="150" alt="Make with Java"></a>
 
 Enlace del repositorio general: https://github.com/borealcoding/2DAM-AccesDades
+
 Enlace de la rama A2, donde se ubica el ejercicio: https://github.com/borealcoding/2DAM-AccesDades/tree/A2
 
 ~~Al igual que en la actividad voluntaria de PSP, habra que descomentar/comentar
