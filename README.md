@@ -1,6 +1,6 @@
 # 2DAM-AccesDades
 ## Eduardo Rua Chamorro | Florida Universitaria
-![made with java](https://github.com/borealcoding/2DAM-AccesDades/blob/master/made-with-java.svg?raw=true "Made with Java")
+<a href="https://forthebadge.com/generator/"><img src="https://github.com/borealcoding/2DAM-AccesDades/blob/master/made-with-java.svg" width="150" alt="Make with Java"></a>
 
 Al igual que en la actividad voluntaria de PSP, habra que descomentar/comentar
 para ir probando los ejercicios uno a uno.
