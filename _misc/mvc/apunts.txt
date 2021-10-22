@@ -1,0 +1,2 @@
+modelo: sólo se maneja la gestión de datos relacionados con la app
+vista: se encarga únicamente de la parte visual
