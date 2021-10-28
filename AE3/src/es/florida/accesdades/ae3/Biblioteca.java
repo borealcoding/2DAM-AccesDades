@@ -17,8 +17,9 @@ public class Biblioteca {
 	 * Metode: crearLlibre(Llibre llibre)
 	 * Funcio: crear un nou llibre com a XML a partir de les dades proporcionades per l'usuari, torna l'identificador del llibre
 	 */
-	public int crearLlibre(Llibre llibre) {
-		return 0;
+	public static int crearLlibre(Llibre llibre) {
+		
+		return identificador;
 		
 	}
 	/*
@@ -26,35 +27,36 @@ public class Biblioteca {
 	 * Funcio: torna un objecte llibre a partir d'un identificador
 	 */
 	public Llibre recuperarLlibre(int identificador) {
-		return null;
+		return llibre;
 	}
 	/*
 	 * Metode: mostrarLlibre(Llibre llibre)
 	 * Funcio: mostra els atributs del llibre per pantalla
 	 */
-	public void mostrarLlibre(Llibre llibre) {
+	public static void mostrarLlibre(Llibre llibre) {
 		
 	}
 	/*
 	 * Metode: borrarLlibre(int identificador)
 	 * Funcio: borra un objecte llibre a partir d'un identificador
 	 */
-	public void borrarLlibre(int identificador) {
+	public static void borrarLlibre(int identificador) {
 		
 	}
 	/*
 	 * Metode: actualitzaLlibre(int identificador)
 	 * Funcio: actualitza (modifica) la informacio d'un objecte llibre a partir d'un identificador
 	 */
-	public void actualitzaLlibre(int identificador) {
+	public static void actualitzaLlibre(int identificador) {
 		
 	}
 	/*
 	 * Metode: ArrayList<Llibre> recuperarTots()
 	 * Funcio: torna una llista amb tots els llibres de la biblioteca
 	 */
-	public ArrayList<Llibre> recuperarTots() {
-		return null;
+	public static ArrayList<Llibre> recuperarTots() {
+		
+		return llibres;
 	}
 	/*
 	 * Metode: main 

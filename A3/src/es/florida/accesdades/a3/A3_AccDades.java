@@ -1,13 +1,18 @@
 package es.florida.accesdades.a3;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.*;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
@@ -284,16 +289,69 @@ public class A3_AccDades {
 	 * 24: Com a última funcionalitat, es demana que es guarde la llista completa d’objectes en un nou fitxer XML. S’ha de comprovar que el format del fitxer resultant es correspon a l’esperat per a un fitxer XML (indent o sagnia adequats).
 	 */
 	public static void escriureXML(ArrayList<Llibre> llibres) {
-		
+		try {
+			DocumentBuilderFactory dbFact = DocumentBuilderFactory.newInstance();
+			DocumentBuilder build = dbFact.newDocumentBuilder();
+			Document doc = build.newDocument();
+			Element arrel = doc.createElement("Llibres");
+			doc.appendChild(arrel);
 			
+			for(Llibre l : llibres) {
+				Element llibre = doc.createElement("Llibre");
+				
+				String id = String.valueOf(l.getId());
+				llibre.setAttribute("id_llibre", id);
+				arrel.appendChild(llibre);
+				
+				Element titol = doc.createElement("titol");
+				titol.appendChild(doc.createTextNode(String.valueOf(l.getTitol())));
+				llibre.appendChild(titol);
+				
+				Element autor = doc.createElement("autor");
+				autor.appendChild(doc.createTextNode(String.valueOf(l.getAutor())));
+				llibre.appendChild(autor);
+				
+				Element anyPublicacio = doc.createElement("any_publicacio");
+				anyPublicacio.appendChild(doc.createTextNode(String.valueOf(l.getAnyPublicacio())));
+				llibre.appendChild(anyPublicacio);
+				
+				Element editorial = doc.createElement("editorial");
+				editorial.appendChild(doc.createTextNode(String.valueOf(l.getEditorial())));
+				llibre.appendChild(editorial);
+				
+				Element numPagines = doc.createElement("num_pagines");
+				numPagines.appendChild(doc.createTextNode(String.valueOf(l.getNumPagines())));
+				llibre.appendChild(numPagines);
+			}
+			TransformerFactory tranF = TransformerFactory.newInstance();
+			Transformer aTransFormer = tranF.newTransformer();
+			aTransFormer.setOutputProperty(OutputKeys.ENCODING, "ISO-8859-1");
+			aTransFormer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount","4");
+			aTransFormer.setOutputProperty(OutputKeys.INDENT, "yes");
+			DOMSource source = new DOMSource(doc);
+			try {
+				FileWriter fw = new FileWriter("Llibres2.xml");
+				StreamResult result = new StreamResult(fw);
+				aTransFormer.transform(source, result);
+				fw.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+		} catch (TransformerException ex) {
+			System.err.println("Error escribiendo el documento");
+		} catch (ParserConfigurationException ex) {
+			System.err.println("Error construyendo el documento");
+		}
 	}
 	
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		//mostrarXML();
+		mostrarXML();
 		//mostrarNumNodes();
-		llegirObjecteUsuari();
+		//llegirObjecteUsuari();
+		//escriureXML(llegirObjecteUsuari());
+	
 	}
-
 }
