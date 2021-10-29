@@ -15,6 +15,10 @@ public class Llibre {
 		this.autor = autor;
 		this.editorial = editorial;
 	}
+	
+	public Llibre(int identificador) {
+		this.identificador = identificador;
+	}
 
 	// ---- SETTERS
 	public void setId(int identificador) {
