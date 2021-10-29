@@ -10,10 +10,13 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
@@ -71,7 +74,7 @@ public class Biblioteca {
 		
 		TransformerFactory tranF = TransformerFactory.newInstance();
 		Transformer aTransFormer = tranF.newTransformer();
-		aTransFormer.setOutputProperty(OutputKeys.ENCODING, "ISO-8859-1");
+		aTransFormer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 		aTransFormer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount","4");
 		aTransFormer.setOutputProperty(OutputKeys.INDENT, "yes");
 		DOMSource source = new DOMSource(doc);
@@ -105,7 +108,6 @@ public class Biblioteca {
             Document document = dBuilder.parse(new File(strFitxerXML));
             
             Element arrel = document.getDocumentElement();
-            System.out.println("Contenido XML "+arrel.getNodeName()+": ");
             NodeList nodeList = document.getElementsByTagName("Llibre");
             
             for(int i = 0; i < nodeList.getLength(); i++) {
@@ -154,7 +156,39 @@ public class Biblioteca {
 	 * Funcio: borra un objecte llibre a partir d'un identificador
 	 */
 	public static void borrarLlibre(int identificador) {
-		
+		// cargamos el documento xml
+		String strFitxerXML = "Llibres.xml";
+		File fitxerXML = new File(strFitxerXML);
+		try {
+			
+			DocumentBuilderFactory dBuilderF = DocumentBuilderFactory.newInstance();
+	        DocumentBuilder dBuilder = dBuilderF.newDocumentBuilder();
+	        Document document = dBuilder.parse(fitxerXML);
+	        
+	        // buscamos entre los nodos Llibre, y eliminamos aquel que contenga el atributo id_llibre deseado
+	        NodeList items = document.getElementsByTagName("Llibre");
+	        for(int i=0; i < items.getLength(); i++) {
+	        	Element element = (Element) items.item(i);
+	        	if(element.getAttribute("id_llibre").equalsIgnoreCase(String.valueOf(identificador))) {
+	        		element.getParentNode().removeChild(element);
+	        	}
+	        }
+	        
+	        // transformamos la informacion a documento xml
+	        Transformer transformer = TransformerFactory.newInstance().newTransformer();
+			Result result = new StreamResult(fitxerXML);
+			Source source = new DOMSource(document);
+			transformer.transform (source, result);
+	        
+		} catch(IOException e) {
+            e.printStackTrace();
+        } catch(ParserConfigurationException parserEx) {
+        	parserEx.printStackTrace();
+        } catch(SAXException saxEx) {
+        	saxEx.printStackTrace();
+        } catch (TransformerException e) {
+			e.printStackTrace();
+		}	
 	}
 	/*
 	 * Metode: actualitzaLlibre(int identificador)
@@ -162,6 +196,23 @@ public class Biblioteca {
 	 */
 	public static void actualitzaLlibre(int identificador) {
 		
+		ArrayList<Llibre> llibres = recuperarTots();
+		Scanner sc = new Scanner(System.in);
+			for(Llibre l : llibres) {
+				if(identificador == l.getId()) {
+					System.out.print("Indica el titol del llibre: ");
+		        	llibres.get(identificador-1).setTitol(sc.nextLine());
+		        	System.out.print("De quin autor?: ");
+		        	llibres.get(identificador-1).setAutor(sc.nextLine());
+		        	System.out.print("En quin any es va publicar?: ");
+		        	llibres.get(identificador-1).setAnyPublicacio(Integer.valueOf(sc.nextInt()));
+		        	System.out.print("Nombra la editorial: ");
+		        	llibres.get(identificador-1).setEditorial(sc.nextLine());
+		        	System.out.print("I quantes pagines te?: ");
+		        	llibres.get(identificador-1).setNumPagines(Integer.valueOf(sc.nextInt()));
+				}
+			}
+
 	}
 	/*
 	 * Metode: ArrayList<Llibre> recuperarTots()
@@ -185,8 +236,6 @@ public class Biblioteca {
             
             Element arrel = document.getDocumentElement();
             NodeList nodeList = document.getElementsByTagName("Llibre");
-            System.out.println("Contenido XML "+arrel.getNodeName()+": ");
-            
             
             for(int i = 0; i < nodeList.getLength(); i++) {
             	Node node = nodeList.item(i);
@@ -202,14 +251,6 @@ public class Biblioteca {
             		
             		l = new Llibre(identificador, any_publicacio, numPagines, titol, autor, editorial);
             		llibres.add(l);
-            	
-            		// EL USUARI TE QUE CONFIRMAR-NOS SI DESITJA O NO VORE LA LLISTA COMPLETA DE LLIBRES
-            		System.out.println("ID_llibre: "+eElement.getAttribute("id_llibre"));
-            		System.out.println("Titol: "+eElement.getElementsByTagName("titol").item(0).getTextContent());
-            		System.out.println("Autor: "+eElement.getElementsByTagName("autor").item(0).getTextContent());
-            		System.out.println("Any de publicacio: "+eElement.getElementsByTagName("any_publicacio").item(0).getTextContent());
-            		System.out.println("Editorial: "+eElement.getElementsByTagName("editorial").item(0).getTextContent());
-            		System.out.println("Num.º pagines: "+eElement.getElementsByTagName("num_pagines").item(0).getTextContent());
             	} // end-if
             } // end-for
             
@@ -228,10 +269,61 @@ public class Biblioteca {
 	 * Metode: main 
 	 * Funcio: mostra un menu amb diverses accions disponibles, el usuari podra seleccionar la que desitje
 	 */
+	
+	
+	public static void writeXmlFile() {
+		try {
+		DocumentBuilderFactory dFact = DocumentBuilderFactory.newInstance();
+		DocumentBuilder build = dFact.newDocumentBuilder();
+		Document doc = build.newDocument();
+		Element raiz = doc.createElement("canciones");
+		doc.appendChild(raiz);
+		for (Cancion can : lista.getListaCanciones()) {
+		Element cancion = doc.createElement("cancion");
+		String id = String.valueOf(can.getId());
+		cancion.setAttribute("id",id); raiz.appendChild(cancion);
+		Element titulo = doc.createElement("titulo");
+		titulo.appendChild(doc.createTextNode(String.valueOf(can.getTitulo())));
+		cancion.appendChild(titulo);
+		Element artista = doc.createElement("artista");
+		artista.appendChild(doc.createTextNode(String.valueOf(can.getArtista())));
+		cancion.appendChild(artista);
+		Element anyo = doc.createElement("anyo");
+		anyo.appendChild(doc.createTextNode(String.valueOf(can.getAnyo())));
+		cancion.appendChild(anyo);
+		Element formato = doc.createElement("formato");
+		formato.appendChild(doc.createTextNode(String.valueOf(can.getFormato())));
+		cancion.appendChild(formato);
+		}
+		TransformerFactory tranFactory = TransformerFactory.newInstance(); // Crear serializador
+		Transformer aTransformer = tranFactory.newTransformer();
+		aTransformer.setOutputProperty(OutputKeys.ENCODING, "ISO-8859-1"); // Darle formato al documento
+		aTransformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+		aTransformer.setOutputProperty(OutputKeys.INDENT, "yes");
+		DOMSource source = new DOMSource(doc);
+		try {
+		FileWriter fw = new FileWriter("canciones2.xml"); // Definir el nombre del fichero y guardar
+		StreamResult result = new StreamResult(fw);
+		aTransformer.transform(source, result);
+		fw.close();
+		} catch (IOException e) {
+		e.printStackTrace();
+		}
+		} catch (TransformerException ex) {
+		System.out.println("Error escribiendo el documento");
+		} catch (ParserConfigurationException ex) {
+		System.out.println("Error construyendo el documento");
+		}
+		}
+	
+	
+	
+	
+	
 	public static void main(String[] args) throws InterruptedException, ParserConfigurationException, TransformerException {
 		// TODO Auto-generated method stub
 		Scanner sc = new Scanner(System.in);
-		int opcio = 0;
+		int opcio = 0, idLlibre;
 		
 		// MENU 
 		System.out.println("Selecciona una de les opcions disponibles d'aquest menu:"
@@ -245,16 +337,23 @@ public class Biblioteca {
 		opcio = sc.nextInt();
 		switch(opcio) {
 		case 1:
-			recuperarTots();
+			ArrayList<Llibre> llibres = recuperarTots();
+			System.out.println("\t----- Contingut biblioteca -----");
+    		for(Llibre l : llibres) {
+    			System.out.println("ID_llibre: "+l.getId());
+        		System.out.println("Titol: "+l.getTitol());
+        		System.out.println("Autor: "+l.getAutor());
+        		System.out.println("Any de publicacio: "+l.getAnyPublicacio());
+        		System.out.println("Editorial: "+l.getEditorial());
+        		System.out.println("Num.º pagines: "+l.getNumPagines()+"\n");
+    		}
 			break;
 		case 2:
 			Scanner sc2 = new Scanner(System.in);
-			int idLlibre;
 			System.out.print("Indica el ID del llibre que vols consultar: ");
 			idLlibre = sc2.nextInt();
 			mostrarLlibre(recuperarLlibre(idLlibre));
 			sc2.close();
-			
 			break;
 		case 3:
 			Scanner sc3 = new Scanner(System.in);
@@ -280,13 +379,21 @@ public class Biblioteca {
         	sc3.close();
 			break;
 		case 4:
-			System.out.println("4");
+			Scanner sc4 = new Scanner(System.in);
+			System.out.print("Introdueix el ID del llibre que vols modificar: ");
+			idLlibre = sc4.nextInt();
+			actualitzaLlibre(idLlibre);
 			break;
 		case 5:
-			System.out.println("5");
+			Scanner sc5 = new Scanner(System.in);
+			System.out.print("Indica el ID del llibre que vols eliminar: ");
+			idLlibre = sc5.nextInt();
+			borrarLlibre(idLlibre);
+			sc5.close();
 			break;
 		case 6:
-			System.out.println("6");
+			System.out.println("Gracies per consultar la nostra biblioteca. Adeu!");
+			System.exit(0);
 			break;
 		default:
 			System.err.println("ERROR! La opcio sel·leccionada no existeix");
