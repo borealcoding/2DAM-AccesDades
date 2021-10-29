@@ -1,18 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- Document DTD que s'encarrega de crear la estructura basica en la que es van a organitzar les dades -->
-<!DOCTYPE Llibres [
-    <!ELEMENT Llibres (Llibre)+>
-    <!ELEMENT Llibre (titol,autor,any_publicacio,editorial,num_pagines)*>
-        <!ATTLIST Llibre id_llibre CDATA #REQUIRED>
-    <!ELEMENT titol (#PCDATA)>
-    <!ELEMENT autor (#PCDATA)>
-    <!ELEMENT any_publicacio (#PCDATA)>
-    <!ELEMENT editorial (#PCDATA)>
-    <!ELEMENT num_pagines (#PCDATA)>
-]>
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
 <Llibres>
     <Llibre id_llibre="1">
-        <titol>El seÃ±or de los anillos - La Comunidad del Anillo</titol>
+        <titol>El señor de los anillos - La Comunidad del Anillo</titol>
         <autor>J. R. R. Tolkien</autor>
         <any_publicacio>1978</any_publicacio>
         <editorial>Ediciones Minotauro</editorial>
@@ -27,7 +16,7 @@
     </Llibre>
     <Llibre id_llibre="3">
         <titol>Jane Eyre</titol>
-        <autor>Charlotte BrontÃ«</autor>
+        <autor>Charlotte Brontë</autor>
         <any_publicacio>1847</any_publicacio>
         <editorial>Smith, Elder and Company</editorial>
         <num_pagines>453</num_pagines>
@@ -45,5 +34,12 @@
         <any_publicacio>1915</any_publicacio>
         <editorial>Kurt Wolff Verlag</editorial>
         <num_pagines>80</num_pagines>
+    </Llibre>
+    <Llibre id_llibre="6">
+        <titol>yo robot</titol>
+        <autor>isaac asimov</autor>
+        <any_publicacio>1341</any_publicacio>
+        <editorial>bromera</editorial>
+        <num_pagines>394</num_pagines>
     </Llibre>
 </Llibres>
