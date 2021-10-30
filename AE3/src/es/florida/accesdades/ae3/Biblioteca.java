@@ -80,9 +80,9 @@ public class Biblioteca {
 				e.printStackTrace();
 			} // end-try-catch
 		} catch (TransformerException ex) {
-			System.err.println("Error escribiendo el documento");
+			System.err.println("ERROR al escriure el document");
 		} catch (ParserConfigurationException ex) {
-			System.err.println("Error construyendo el documento");
+			System.err.println("ERROR al construir el document");
 		}
 
 		
@@ -204,28 +204,34 @@ public class Biblioteca {
 	
 	public static void actualitzaLlibre(int identificador) {
 		
-		ArrayList<Llibre> llibres = recuperarTots();
 		Scanner sc = new Scanner(System.in);
-			for(Llibre l : llibres) {
+		
+		System.out.print("Indica el titol del llibre: ");
+		String nouTitol = sc.nextLine();
+		
+    	System.out.print("De quin autor?: ");
+    	String nouAutor = sc.nextLine();
+		
+    	System.out.print("En quin any es va publicar?: ");
+    	String nouAnyPublicacio = sc.nextLine();
+    	
+    	System.out.print("Nombra la editorial: ");
+    	String novaEditorial = sc.nextLine();
+    	
+    	System.out.print("I quantes pagines te?: ");
+    	String numPagines = sc.nextLine();
+    	
+			for(Llibre l : recuperarTots()) {
 				if(identificador == l.getId()) {
-					System.out.println("Indica el titol del llibre: ");
-					String nouTitol = sc.nextLine();
+
 		        	llibres.get(identificador-1).setTitol(nouTitol);
 		        	
-		        	System.out.println("De quin autor?: ");
-		        	String nouAutor = sc.nextLine();
 		        	llibres.get(identificador-1).setAutor(nouAutor);
 		        	
-		        	System.out.println("En quin any es va publicar?: ");
-		        	String nouAnyPublicacio = sc.nextLine();
 		        	llibres.get(identificador-1).setAnyPublicacio(Integer.parseInt(nouAnyPublicacio));
 		        	
-		        	System.out.println("Nombra la editorial: ");
-		        	String novaEditorial = sc.nextLine();
 		        	llibres.get(identificador-1).setEditorial(novaEditorial);
 		        	
-		        	System.out.println("I quantes pagines te?: ");
-		        	String numPagines = sc.nextLine();
 		        	llibres.get(identificador-1).setNumPagines(Integer.parseInt(numPagines));
 				} // end-if
 			} // end-for
@@ -347,9 +353,9 @@ public class Biblioteca {
 				} // end-try-catch
 				
 			} catch (TransformerException ex) {
-				System.err.println("Error escribiendo el documento");
+				System.err.println("ERROR al escriure el document");
 			} catch (ParserConfigurationException ex) {
-				System.err.println("Error construyendo el documento");
+				System.err.println("ERROR al construir el document");
 			} // end-try-catch
 	} // end-writeXmlFile
 	
@@ -360,7 +366,6 @@ public class Biblioteca {
 	
 	public static void main(String[] args) throws InterruptedException, ParserConfigurationException, TransformerException {
 		Scanner sc = new Scanner(System.in);
-		int opcioMenu = 0, idLlibre;
 		
 		// MENU 
 		System.out.println("Selecciona una de les opcions disponibles d'aquest menu:"
@@ -371,9 +376,9 @@ public class Biblioteca {
 				+ "\n\t5. Borrar llibre"
 				+ "\n\t6. Tanca la biblioteca");
 		System.out.print("> ");
-		opcioMenu = sc.nextInt();
+		String opcioMenu = sc.nextLine();
 		
-		switch(opcioMenu) {
+		switch(Integer.parseInt(opcioMenu)) {
 		case 1:
 			ArrayList<Llibre> llibres = recuperarTots();
 			System.out.println("\t----- Contingut biblioteca -----");
@@ -387,11 +392,8 @@ public class Biblioteca {
     		} // end-for
 			break;
 		case 2:
-			Scanner sc2 = new Scanner(System.in);
 			System.out.print("Indica el ID del llibre que vols consultar: ");
-			idLlibre = sc2.nextInt();
-			mostrarLlibre(recuperarLlibre(idLlibre));
-			sc2.close();
+			mostrarLlibre(recuperarLlibre(Integer.parseInt(sc.nextLine())));
 			break;
 		case 3:
 			Scanner sc3 = new Scanner(System.in);
@@ -400,7 +402,7 @@ public class Biblioteca {
         	System.out.println("Introdueix les dades que se te indiquen.");
         	Thread.sleep(300);
         	
-        	System.out.print("Dime el ID del llibre (a partir del 6 en amunt): ");
+        	System.out.print("Dime el ID del llibre (si el id ja esta asignat, es substituira pel llibre nou): ");
         	int nouId = Integer.parseInt(sc3.nextLine());
         	
         	System.out.print("Indica el titol del llibre: ");
@@ -420,21 +422,14 @@ public class Biblioteca {
         	
         	Llibre l = new Llibre(nouId, nouAnyPublicacio, nouNumPagines, titolNou, autorNou, editorialNova);
         	crearLlibre(l);
-        	sc3.close();
 			break;
 		case 4:
-			Scanner sc4 = new Scanner(System.in);
 			System.out.print("Introdueix el ID del llibre que vols modificar: ");
-			idLlibre = sc4.nextInt();
-			actualitzaLlibre(idLlibre);
-			sc4.close();
+			actualitzaLlibre(Integer.parseInt(sc.nextLine()));
 			break;
 		case 5:
-			Scanner sc5 = new Scanner(System.in);
 			System.out.print("Indica el ID del llibre que vols eliminar: ");
-			idLlibre = sc5.nextInt();
-			borrarLlibre(idLlibre);
-			sc5.close();
+			borrarLlibre(Integer.parseInt(sc.nextLine()));
 			break;
 		case 6:
 			System.out.println("Gracies per consultar la nostra biblioteca. Adeu!");

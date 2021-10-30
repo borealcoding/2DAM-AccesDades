@@ -38,8 +38,8 @@
     <Llibre id_llibre="6">
         <titol>q</titol>
         <autor>q</autor>
-        <any_publicacio>5</any_publicacio>
+        <any_publicacio>55</any_publicacio>
         <editorial>q</editorial>
-        <num_pagines>5</num_pagines>
+        <num_pagines>65</num_pagines>
     </Llibre>
 </Llibres>
