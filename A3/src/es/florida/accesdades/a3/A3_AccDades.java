@@ -12,6 +12,8 @@ import java.util.Scanner;
 
 import javax.xml.parsers.*;
 import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
@@ -38,7 +40,7 @@ public class A3_AccDades {
             Document document = dBuilder.parse(new File(strFitxerXML));
             
             Element arrel = document.getDocumentElement();
-            System.out.println("Contenido XML "+arrel.getNodeName()+": ");
+            System.out.println("Contingut XML "+arrel.getNodeName()+": ");
             NodeList nodeList = document.getElementsByTagName("Llibre");
             
             int countNodes = 0;
@@ -46,7 +48,6 @@ public class A3_AccDades {
             	Node node = nodeList.item(i);
             	System.out.println("");
             	if(node.getNodeType() == Node.ELEMENT_NODE) {
-            		Element eElement = (Element) node;
             		countNodes++;
             	} // end-if
             } // end-for
@@ -258,7 +259,7 @@ public class A3_AccDades {
         	Thread.sleep(200);
         	System.out.println("Introdueix les dades que se te indiquen.");
         	Thread.sleep(200);
-        	System.out.print("Dime el ID del llibre (a partir del 6 en amunt): ");
+        	System.out.print("Dime el ID del llibre (assegurat de que l'ID indicat, no esta assignat a cap llibre): ");
         	int id = Integer.parseInt(sc.nextLine());
         	System.out.print("Indica el titol del llibre: ");
         	String titolNou = sc.nextLine();
@@ -285,7 +286,7 @@ public class A3_AccDades {
         } catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		
+		sc.close();
 		return llibres;
 	}
 	
@@ -334,7 +335,7 @@ public class A3_AccDades {
 			aTransFormer.setOutputProperty(OutputKeys.INDENT, "yes");
 			DOMSource source = new DOMSource(doc);
 			try {
-				FileWriter fw = new FileWriter("Llibres2.xml");
+				FileWriter fw = new FileWriter("Llibres.xml");
 				StreamResult result = new StreamResult(fw);
 				aTransFormer.transform(source, result);
 				fw.close();
@@ -343,19 +344,86 @@ public class A3_AccDades {
 			}
 			
 		} catch (TransformerException ex) {
-			System.err.println("Error escribiendo el documento");
+			System.err.println("ERROR escrivint el document");
 		} catch (ParserConfigurationException ex) {
-			System.err.println("Error construyendo el documento");
+			System.err.println("ERROR construint el document");
 		}
 	}
 	
+	/*
+	 * Metode: borrarLlibre()
+	 * Obs: El afegixc per a poder donar-li mes funcionalitat a l'aplicacio, ja que si creem un llibre nou, almenys tenim que tindre la opcio de poder esborrar-lo
+	 * */
+	public static void borrarLlibre(int identificador) {
+		// carreguem el fitxer XML
+		String strFitxerXML = "Llibres.xml";
+		File fitxerXML = new File(strFitxerXML);
+		try {
+			
+			DocumentBuilderFactory dBuilderF = DocumentBuilderFactory.newInstance();
+	        DocumentBuilder dBuilder = dBuilderF.newDocumentBuilder();
+	        Document document = dBuilder.parse(fitxerXML);
+	        
+	        // busquem entre els nodes Llibre, i eliminem aquells que continguen el atribut id_llibre indicat per parametre
+	        NodeList items = document.getElementsByTagName("Llibre");
+	        for(int i=0; i < items.getLength(); i++) {
+	        	Element element = (Element) items.item(i);
+	        	if(element.getAttribute("id_llibre").equalsIgnoreCase(String.valueOf(identificador))) {
+	        		element.getParentNode().removeChild(element);
+	        	} // end-if
+	        } // end-for
+	        
+	        // transformem l'informacio a document xml
+	        Transformer transformer = TransformerFactory.newInstance().newTransformer();
+			Result result = new StreamResult(fitxerXML);
+			Source source = new DOMSource(document);
+			transformer.transform (source, result);
+	        
+		} catch(IOException e) {
+            e.printStackTrace();
+        } catch(ParserConfigurationException parserEx) {
+        	parserEx.printStackTrace();
+        } catch(SAXException saxEx) {
+        	saxEx.printStackTrace();
+        } catch (TransformerException e) {
+			e.printStackTrace();
+		} // end-try-catch	
+	} // end-borrarLlibre
+	
 	
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		mostrarXML();
-		//mostrarNumNodes();
-		//llegirObjecteUsuari();
-		//escriureXML(llegirObjecteUsuari());
-	
-	}
-}
+		Scanner sc = new Scanner(System.in);
+		
+		System.out.println("Selecciona una de les opcions disponibles d'aquest menu:"
+				+ "\n\t1. Mostrar tots els titols de la biblioteca"
+				+ "\n\t2. Mostrar el numero de nodes que conte cada llibre"
+				+ "\n\t3. Crear un nou llibre"
+				+ "\n\t4. Borrar llibre"
+				+ "\n\t5. Tanca la biblioteca");
+		System.out.print("> ");
+		String opcioMenu = sc.nextLine();
+		
+		switch(Integer.parseInt(opcioMenu)) {
+			case 1:
+				mostrarXML();
+				break;
+			case 2:
+				mostrarNumNodes();
+				break;
+			case 3:
+				escriureXML(llegirObjecteUsuari());
+				break;
+			case 4:
+				System.out.print("Indica el ID del llibre que vols eliminar: ");
+				borrarLlibre(Integer.parseInt(sc.nextLine()));
+				break;
+			case 5:
+				System.out.println("Gracies per consultar la nostra biblioteca. Adeu!");
+				System.exit(0);
+				break;
+			default:
+				System.err.println("ERROR! La opcio sel·leccionada no existeix");
+		} // end-switch
+		sc.close();
+	} // end-main
+} // end-class

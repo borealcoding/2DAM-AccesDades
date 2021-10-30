@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
-<Llibres>
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?><Llibres>
     <Llibre id_llibre="1">
         <titol>El senor de los anillos - La Comunidad del Anillo</titol>
         <autor>J. R. R. Tolkien</autor>
@@ -34,12 +33,5 @@
         <any_publicacio>1915</any_publicacio>
         <editorial>Kurt Wolff Verlag</editorial>
         <num_pagines>80</num_pagines>
-    </Llibre>
-    <Llibre id_llibre="6">
-        <titol>q</titol>
-        <autor>q</autor>
-        <any_publicacio>55</any_publicacio>
-        <editorial>q</editorial>
-        <num_pagines>65</num_pagines>
     </Llibre>
 </Llibres>

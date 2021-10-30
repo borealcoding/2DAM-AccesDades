@@ -23,7 +23,7 @@ public class Biblioteca {
 	 * Funcio: crear un nou llibre com a XML a partir de les dades proporcionades per l'usuari, torna l'identificador del llibre
 	 */
 	
-	public static int crearLlibre(Llibre l) throws ParserConfigurationException, TransformerException {
+	public static int crearLlibre(Llibre l, int nouId) throws ParserConfigurationException, TransformerException {
 		
 		ArrayList<Llibre> llibres = recuperarTots();
 		llibres.add(l);
@@ -37,6 +37,7 @@ public class Biblioteca {
 			doc.appendChild(arrel);
 			
 			for(Llibre l1 : llibres) {
+				
 				Element llibre = doc.createElement("Llibre");
 				
 				id = String.valueOf(l1.getId());
@@ -402,7 +403,7 @@ public class Biblioteca {
         	System.out.println("Introdueix les dades que se te indiquen.");
         	Thread.sleep(300);
         	
-        	System.out.print("Dime el ID del llibre (si el id ja esta asignat, es substituira pel llibre nou): ");
+        	System.out.print("Dime el ID del llibre (assegurat de que l'ID indicat, no esta assignat a cap llibre): ");
         	int nouId = Integer.parseInt(sc3.nextLine());
         	
         	System.out.print("Indica el titol del llibre: ");
@@ -421,7 +422,7 @@ public class Biblioteca {
         	int nouNumPagines = Integer.parseInt(sc3.nextLine());
         	
         	Llibre l = new Llibre(nouId, nouAnyPublicacio, nouNumPagines, titolNou, autorNou, editorialNova);
-        	crearLlibre(l);
+        	crearLlibre(l,nouId);
 			break;
 		case 4:
 			System.out.print("Introdueix el ID del llibre que vols modificar: ");
