@@ -10,11 +10,11 @@ import java.sql.Statement;
 import java.util.Scanner;
 
 /**
- * @author edvard
+ * @author Eduardo Rua Chamorro | Florida Universitaria - 2ºDAM
  * @version AE4 - 04.11.21
  */
 
-public class biblioteca {
+public class Biblioteca {
 	public static void main(String[] args) {
 		try {
 			// Primerament tenim que llegir el fitxer CSV, per a poder treballar amb les dades d'aquest.
