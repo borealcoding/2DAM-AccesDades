@@ -27,4 +27,4 @@ DROP DATABASE IF EXISTS biblioteca;
 #Llibres (títol, autor i any de publicació) dels autors nascuts abans de 1950.
 SELECT titol,autor,anyNaixement,anyPublicacio FROM llibres WHERE anyNaixement < 1950;
 #Editorials que hagen publicat almenys un llibre en el segle XXI.
-SELECT COUNT(editorial) AS nLlibresPublicats, editorial FROM llibres WHERE anyPublicacio > 2000;
+SELECT titol, editorial, anyPublicacio FROM llibres WHERE anyPublicacio > 2000;

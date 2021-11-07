@@ -1,5 +1,6 @@
 package es.florida.accesdades.ae4;
 
+import java.awt.FlowLayout;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.sql.Connection;
@@ -8,6 +9,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Scanner;
+
+import javax.swing.JDialog;
 
 /**
  * @author Eduardo Rua Chamorro | Florida Universitaria - 2ºDAM
@@ -21,7 +24,6 @@ public class Biblioteca {
 			String strFitxerCsv = "AE04_T1_4_JDBC_Dades.csv";
 			BufferedReader br = new BufferedReader(new FileReader(strFitxerCsv));
 			String linea = null;			
-			int batchSize = 20;
 			 
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/biblioteca","root","0000");
@@ -121,6 +123,14 @@ public class Biblioteca {
 				}
 				System.out.println();
 			} // end-while
+			
+
+			
+			
+			
+			
+			
+			
 			
 			// TANQUEM STATEMENTS Y CONEXIONS
 			br.close();
