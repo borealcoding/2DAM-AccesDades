@@ -8,7 +8,6 @@ package es.florida.accesdades.ae4;
  * No s'ha fet servir el MVC per falta de temps, en aquest cas es fa servir unicament d'un unic fitxer java on, dividit per metodes, s'executara tota la app.
  */
 
-
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
@@ -27,11 +26,12 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.StringTokenizer;
 import java.awt.event.ActionEvent;
 import java.awt.SystemColor;
 import java.awt.Panel;
 
-public class Vista extends JFrame {
+public class Biblioteca extends JFrame {
 	// DECLARACIONS GLOBALS DE LES VARIABLES SWING
 	private JButton btnSelectTabla, btnEditorials, btnLlibres, btnExecConsulta;
 	private JLabel tagTitol, tagSubtitol1, tagSubtitol2, tagAutor;
@@ -39,7 +39,7 @@ public class Vista extends JFrame {
 	private JPanel contentPane;
 
 	// CONSTRUCTOR PER A INICIALITZAR ELS METODES
-	public Vista() {
+	public Biblioteca() {
 		visualitzar();
 		exeSQL();
 	} // end-Biblioteca
@@ -92,7 +92,8 @@ public class Vista extends JFrame {
 	 * 1: DIALEG DE RESULTAT DE CONSULTA
 	 * 2: DIALEG DE GUIA D'US
 	 * PRIMERAMENT ES DECLAREN LES VARIABLES NECESARIES, I S'INICIALITZEN AMB ELS VALORS GENERALS. PERO, AMBDOS DIALEGS NO TINDRAN LES MATEIXES CARACTERISTIQUES.
-	 * PER AIXO, HE AFEGIT UN IF QUE ASIGNARA LES PROPIETATS CORRESPONENTS EN FUNCIO DEL DIALEG INVOCAT.*/
+	 * PER AIXO, HE AFEGIT UN IF QUE ASIGNARA LES PROPIETATS CORRESPONENTS EN FUNCIO DEL DIALEG INVOCAT.
+	 * */
 	public void mostrarDialeg(int dialogId, String descripcio, String informacio) {
 		try {
 			JDialog jd = new JDialog(new JFrame());
@@ -144,7 +145,7 @@ public class Vista extends JFrame {
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/biblioteca","root","0000");
 
 			// SENTENCIA QUE S'EFECTUARA PER DEFECTE PER A INTRODUIR LES DADES EXTRETES DEL CSV A LA BBDD
-			String sentenciaInsercion = "INSERT INTO llibres (titol,autor,anyNaixement,anyPublicacio,editorial,numPagines) VALUES (?,?,?,?,?,?)";
+			String sentenciaInsercio = "INSERT INTO llibres (titol,autor,anyNaixement,anyPublicacio,editorial,numPagines) VALUES (?,?,?,?,?,?)";
 			PreparedStatement psInsertar = null;
 			
 			br.readLine();
@@ -154,7 +155,7 @@ public class Vista extends JFrame {
 			 * AÇO ENS AJUDARA A EVITAR DUPLICITATS, JA QUE ES CREARIEN COPIES DEL CONTINGUT DEL CSV
 			 * */
 			PreparedStatement psBorrar = con.prepareStatement("DROP TABLE llibres;");
-			int resultadoBorrar = psBorrar.executeUpdate();
+			int resultatEsborrar = psBorrar.executeUpdate();
 			PreparedStatement reset = null;
 			reset = con.prepareStatement("CREATE TABLE llibres (\r\n"
 					+ "  idLlibre INT AUTO_INCREMENT NOT NULL,\r\n"
@@ -181,7 +182,7 @@ public class Vista extends JFrame {
 				String strEditorial = camps[4];
 				String strNumPagines = camps[5];
 				
-				psInsertar = con.prepareStatement(sentenciaInsercion);
+				psInsertar = con.prepareStatement(sentenciaInsercio);
 
 				psInsertar.setString(1, strTitol);
 				psInsertar.setString(2, strAutor);
@@ -194,7 +195,7 @@ public class Vista extends JFrame {
 				psInsertar.setString(5, strEditorial);
 				psInsertar.setString(6, strNumPagines);
 				
-				int resultadoInsertar = psInsertar.executeUpdate();
+				int resultatInsertar = psInsertar.executeUpdate();
 							
 			} // end-while
 			
@@ -209,17 +210,17 @@ public class Vista extends JFrame {
 						String descripcio = "Dades de la tabla llibres";
 						ResultSet rs = stmt.executeQuery(consulta);
 						int nRegistres = rs.getMetaData().getColumnCount();
-						String resultadoSentencia = "";
+						String resultatSentencia = "";
 						while(rs.next()) {
 							for(int i=1; i<=nRegistres; i++) {
-								resultadoSentencia += rs.getString(i);
+								resultatSentencia += rs.getString(i);
 								if(i<nRegistres) {
-									resultadoSentencia += " - ";
+									resultatSentencia += " - ";
 								} // end-if
 							} // end-for
-							resultadoSentencia += "\n";
+							resultatSentencia += "\n";
 						} // end-while
-						mostrarDialeg(1, descripcio, resultadoSentencia);
+						mostrarDialeg(1, descripcio, resultatSentencia);
 						stmt.close();
 						rs.close();
 					} catch (Exception ex) {
@@ -240,17 +241,17 @@ public class Vista extends JFrame {
 						String descripcio = "Llibres (titol, autor, i any de publicacio) dels autors nascuts abans de 1950";
 						ResultSet rs = stmt.executeQuery(consulta);
 						int nRegistres = rs.getMetaData().getColumnCount();
-						String resultadoSentencia = "";
+						String resultatSentencia = "";
 						while(rs.next()) {
 							for(int i=1; i<=nRegistres; i++) {
-								resultadoSentencia += rs.getString(i);
+								resultatSentencia += rs.getString(i);
 								if(i<nRegistres) {
-									resultadoSentencia += " - ";
+									resultatSentencia += " - ";
 								} // end-if
 							} // end-for
-							resultadoSentencia += "\n";
+							resultatSentencia += "\n";
 						} // end-while
-						mostrarDialeg(1, descripcio, resultadoSentencia);
+						mostrarDialeg(1, descripcio, resultatSentencia);
 						stmt.close();
 						rs.close();
 					} catch (Exception ex) {
@@ -272,17 +273,17 @@ public class Vista extends JFrame {
 						String descripcio = "Editorials que hagen publicat almenys un llibre en el segle XXI";
 						ResultSet rs = stmt.executeQuery(consulta);
 						int nRegistres = rs.getMetaData().getColumnCount();
-						String resultadoSentencia = "";
+						String resultatSentencia = "";
 						while(rs.next()) {
 							for(int i=1; i<=nRegistres; i++) {
-								resultadoSentencia += rs.getString(i);
+								resultatSentencia += rs.getString(i);
 								if(i<nRegistres) {
-									resultadoSentencia += " - ";
+									resultatSentencia += " - ";
 								} // end-if
 							} // end-for
-							resultadoSentencia += "\n";
+							resultatSentencia += "\n";
 						} // end-while
-						mostrarDialeg(1, descripcio, resultadoSentencia);
+						mostrarDialeg(1, descripcio, resultatSentencia);
 						stmt.close();
 						rs.close();
 					} catch (Exception ex) {
@@ -299,23 +300,46 @@ public class Vista extends JFrame {
 			btnExecConsulta.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					try {
-						Statement stmt = con.createStatement();
-						ResultSet rs = stmt.executeQuery(txtAConsulta.getText());
-						int nRegistres = rs.getMetaData().getColumnCount();
-						String descripcio = "Consulta personalitzada";
-						String resultadoSentencia = "";
-						while(rs.next()) {
-							for(int i=1; i<=nRegistres; i++) {
-								resultadoSentencia += rs.getString(i);
-								if(i<nRegistres) {
-									resultadoSentencia += " - ";
-								} // end-if
-							} // end-for
-							resultadoSentencia += "\n";
-						} // end-while
-						mostrarDialeg(1, descripcio, resultadoSentencia);
-						stmt.close();
-						rs.close();
+						String consulta = txtAConsulta.getText();
+						StringTokenizer tokens = new StringTokenizer(consulta);
+						String tipusConsulta = tokens.nextToken().toUpperCase();
+						
+						switch(tipusConsulta) {
+						case "SELECT":
+							Statement stmt = con.createStatement();
+							ResultSet rs = stmt.executeQuery(consulta);
+							int nRegistres = rs.getMetaData().getColumnCount();
+							String descripcio = "Consulta personalitzada";
+							String resultatSentencia = "";
+							while(rs.next()) {
+								for(int i=1; i<=nRegistres; i++) {
+									resultatSentencia += rs.getString(i);
+									if(i<nRegistres) {
+										resultatSentencia += " - ";
+									} // end-if
+								} // end-for
+								resultatSentencia += "\n";
+							} // end-while
+							mostrarDialeg(1, descripcio, resultatSentencia);
+							break;
+						case "INSERT":
+							PreparedStatement psInsertar = con.prepareStatement(consulta);
+							int resultatInsertar = psInsertar.executeUpdate();
+							JOptionPane.showMessageDialog(new JFrame(), tipusConsulta, "realitzat!", JOptionPane.INFORMATION_MESSAGE);
+							break;
+						case "UPDATE":
+							PreparedStatement psActualitzar = con.prepareStatement(consulta);
+							int resultatActualitzar = psActualitzar.executeUpdate();
+							JOptionPane.showMessageDialog(new JFrame(), tipusConsulta, "realitzat!", JOptionPane.INFORMATION_MESSAGE);
+							break;
+						case "DELETE":
+							PreparedStatement psBorrar = con.prepareStatement(consulta);
+							int resultadoBorrar = psBorrar.executeUpdate();
+							JOptionPane.showMessageDialog(new JFrame(), tipusConsulta, "realitzat!", JOptionPane.INFORMATION_MESSAGE);
+							break;
+							default:
+								JOptionPane.showMessageDialog(new JFrame(), tipusConsulta, "ERROR en la consulta!", JOptionPane.ERROR_MESSAGE);
+						} // end-switch
 					} catch (Exception ex) {
 						JOptionPane.showMessageDialog(new JFrame(), ex, "ERROR en la consulta!", JOptionPane.ERROR_MESSAGE);
 					} // end-try-catch
@@ -334,13 +358,13 @@ public class Vista extends JFrame {
 							+ "Si no recordes com fer algunes consultes en llenguatge SQL, mes avall pots vore algunes de les mes usades.\n"
 							+ "Qualsevol dubte que tingues, tambe el pots revisar la següent guia de SQL en: https://www.w3schools.com/MySQL/default.asp"
 							+ "\n\n\n"
-							+ "Per a fer seleccions de dades:\n"
+							+ "> Per a fer seleccions de dades:\n"
 							+ "SELECT * FROM nomTabla;\n"
-							+ "Per a insertar dades:\n"
+							+ "> Per a insertar dades:\n"
 							+ "INSERT INTO nomTabla (camp1, camp2, ...) VALUES (?, ?, ...);\n"
-							+ "Per a actualitzar dades:\n"
+							+ "> Per a actualitzar dades:\n"
 							+ "UPDATE nomTabla SET camp1 = 'valorCamp1' WHERE id = 5;\n"
-							+ "Per a esborrar dades:\n"
+							+ "> Per a esborrar dades:\n"
 							+ "DELETE FROM nomTabla WHERE id = 5;\n";
 					
 					mostrarDialeg(2, descripcio, consells);
@@ -359,7 +383,7 @@ public class Vista extends JFrame {
 
 	// METODE MAIN DESDE EL QUAL LLANÇAREM EL PROGRAMA
 	public static void main(String[] args) {
-		Vista frame = new Vista();
+		Biblioteca frame = new Biblioteca();
 		frame.setVisible(true);
 		frame.setLocationRelativeTo(null);
 	} // end-main
