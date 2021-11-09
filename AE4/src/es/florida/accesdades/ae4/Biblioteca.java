@@ -22,6 +22,7 @@ import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -115,7 +116,7 @@ public class Biblioteca extends JFrame {
 	        } // end-if
 	        if(dialogId == 2) {
 	        	jd.getContentPane().setLayout(new FlowLayout());
-		        jd.setBounds(131,47,411,340);
+		        jd.setBounds(131,47,411,360);
 				txtA.setBounds(10,47,380,280);
 	        } // end-if
 	        
@@ -148,57 +149,72 @@ public class Biblioteca extends JFrame {
 			String sentenciaInsercio = "INSERT INTO llibres (titol,autor,anyNaixement,anyPublicacio,editorial,numPagines) VALUES (?,?,?,?,?,?)";
 			PreparedStatement psInsertar = null;
 			
-			br.readLine();
+			/*
+			 * COMPROVEM SI LA TABLA LLIBRES CONTE ELS 14 REGISTRES DEL CSV, SINO, ELS INTRODUIRA, I SI JA ELS TE, NO FARA RES.
+			 * TAMBE TENIM LA FUNCIONALITAT DE CREAR LA TABLA DE NOU, PER SI VOLEM RESETEJAR-LA
+			 * */
+
+			Statement stmt = con.createStatement();
+			ResultSet infoRegistres = stmt.executeQuery("SELECT COUNT(idLlibre) FROM llibres");
+			int numRegistres;
 			
-			/*
-			 * SENTENCIES PER A PODER RESETEJAR LA TABLA NOMES INICIEM EL PROGRAMA
-			 * AÇO ENS AJUDARA A EVITAR DUPLICITATS, JA QUE ES CREARIEN COPIES DEL CONTINGUT DEL CSV
-			 * */
-			PreparedStatement psBorrar = con.prepareStatement("DROP TABLE llibres;");
-			int resultatEsborrar = psBorrar.executeUpdate();
-			PreparedStatement reset = null;
-			reset = con.prepareStatement("CREATE TABLE llibres (\r\n"
-					+ "  idLlibre INT AUTO_INCREMENT NOT NULL,\r\n"
-					+ "  titol VARCHAR(50) NOT NULL,\r\n"
-					+ "  autor VARCHAR(50) NOT NULL,\r\n"
-					+ "  anyNaixement CHAR(4),\r\n"
-					+ "  anyPublicacio CHAR(4) NOT NULL,\r\n"
-					+ "  editorial VARCHAR(50) NOT NULL,\r\n"
-					+ "  numPagines CHAR(30) NOT NULL,\r\n"
-					+ "  PRIMARY KEY (idLlibre)\r\n"
-					+ ");");
-			reset.executeUpdate();
+			while (infoRegistres.next()) {
+				numRegistres = infoRegistres.getInt(1);
+				if(numRegistres < 1) {
+					/*
+					 * SENTENCIES PER A PODER RESETEJAR LA TABLA
+					 * PER DEFECTE AQUESTA FUNCIONALITAT NO ESTA ACTIVADA, JA QUE TINDREM LA TABLA CREADA ANTERIORMENT
+					 * NOMES DESCOMENTAR SI VOLEM REINICIAR LES DADES PREDETERMINADES
+					 * */
+//					PreparedStatement psBorrar = con.prepareStatement("DROP TABLE llibres;");
+//					int resultatEsborrar = psBorrar.executeUpdate();
+//					PreparedStatement reset = null;
+//					reset = con.prepareStatement("CREATE TABLE llibres (\r\n"
+//							+ "  idLlibre INT AUTO_INCREMENT NOT NULL,\r\n"
+//							+ "  titol VARCHAR(50) NOT NULL,\r\n"
+//							+ "  autor VARCHAR(50) NOT NULL,\r\n"
+//							+ "  anyNaixement CHAR(4),\r\n"
+//							+ "  anyPublicacio CHAR(4) NOT NULL,\r\n"
+//							+ "  editorial VARCHAR(50) NOT NULL,\r\n"
+//							+ "  numPagines CHAR(30) NOT NULL,\r\n"
+//							+ "  PRIMARY KEY (idLlibre)\r\n"
+//							+ ");");
+//					reset.executeUpdate();
+//					
+					/*
+					 * ACI ENS ENCARREGUEM D'EXPORTAR LA INFORMACIO DEL CSV PER A INTRODUIRLA EN VARIABLES
+					 * POSTERIORMENT, AFEGIREM AQUESTA INFORMACIO EN LA TABLA 'LLIBRES' DE LA BBDD 'BIBLIOTECA 
+					 * */
+					
+					br.readLine();
+					
+					while ((linea = br.readLine()) != null) {
+						String[] camps = linea.split(";");
+						String strTitol = camps[0];
+						String strAutor = camps[1];
+						String strAnyNaixement = camps[2];
+						String strAnyPublicacio = camps[3];
+						String strEditorial = camps[4];
+						String strNumPagines = camps[5];
+						
+						psInsertar = con.prepareStatement(sentenciaInsercio);
 
-			/*
-			 * ACI ENS ENCARREGUEM D'EXPORTAR LA INFORMACIO DEL CSV PER A INTRODUIRLA EN VARIABLES
-			 * POSTERIORMENT, AFEGIREM AQUESTA INFORMACIO EN LA TABLA 'LLIBRES' DE LA BBDD 'BIBLIOTECA 
-			 * */
-			while ((linea = br.readLine()) != null) {
-				String[] camps = linea.split(";");
-				String strTitol = camps[0];
-				String strAutor = camps[1];
-				String strAnyNaixement = camps[2];
-				String strAnyPublicacio = camps[3];
-				String strEditorial = camps[4];
-				String strNumPagines = camps[5];
-				
-				psInsertar = con.prepareStatement(sentenciaInsercio);
-
-				psInsertar.setString(1, strTitol);
-				psInsertar.setString(2, strAutor);
-				if(strAnyNaixement == "") {
-					psInsertar.setString(3, "N.C");
-				} else {
-					psInsertar.setString(3, strAnyNaixement);
-				}
-				psInsertar.setString(4, strAnyPublicacio);
-				psInsertar.setString(5, strEditorial);
-				psInsertar.setString(6, strNumPagines);
-				
-				int resultatInsertar = psInsertar.executeUpdate();
-							
+						psInsertar.setString(1, strTitol);
+						psInsertar.setString(2, strAutor);
+						if(strAnyNaixement == "") {
+							psInsertar.setString(3, "N.C");
+						} else {
+							psInsertar.setString(3, strAnyNaixement);
+						}
+						psInsertar.setString(4, strAnyPublicacio);
+						psInsertar.setString(5, strEditorial);
+						psInsertar.setString(6, strNumPagines);
+						
+						int resultatInsertar = psInsertar.executeUpdate();
+					} // end-while 2		
+				} // end-if				
 			} // end-while
-			
+
 			// SELECT TOT
 			btnSelectTabla = new JButton("Mostra tot el contingut de LLIBRES");
 			btnSelectTabla.setFont(new Font("Segoe UI", Font.PLAIN, 11));
@@ -230,6 +246,7 @@ public class Biblioteca extends JFrame {
 			}); // end-actionListener
 			btnSelectTabla.setBounds(220, 99, 224, 30);
 			contentPane.add(btnSelectTabla);
+			// END SELECT TOT
 			
 			// LLIBRES
 			btnLlibres = new JButton("Llibres (titol, autor i any de publicacio) dels autors nascuts abans de 1950");
@@ -262,6 +279,7 @@ public class Biblioteca extends JFrame {
 			btnLlibres.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 			btnLlibres.setBounds(131, 140, 411, 30);
 			contentPane.add(btnLlibres);
+			// END LLIBRES
 			
 			// EDITORIALS
 			btnEditorials = new JButton("Editorials que hagen publicat almenys un llibre en el segle XXI");
@@ -294,49 +312,43 @@ public class Biblioteca extends JFrame {
 			btnEditorials.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 			btnEditorials.setBounds(158, 181, 355, 30);
 			contentPane.add(btnEditorials);
+			// END EDITORIALS
 			
 			// EN AQUESTA CONSULTA, L'USUARI PODRA INTRODUIR EN UN TEXTAREA, LA CONSULTA SQL QUE DESITJA EXECUTAR
 			btnExecConsulta = new JButton("Executar consulta");
 			btnExecConsulta.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					try {
+						// RECOLLIM LA PRIMERA PARAULA DE LA SENTENCIA, PER A IDENTIFICAR QUIN TIPUS DE SENTENCIA SQL ES (SELECT, INSERT, UPDATE, DELETE, ETC)
 						String consulta = txtAConsulta.getText();
 						StringTokenizer tokens = new StringTokenizer(consulta);
 						String tipusConsulta = tokens.nextToken().toUpperCase();
 						
 						switch(tipusConsulta) {
-						case "SELECT":
-							Statement stmt = con.createStatement();
-							ResultSet rs = stmt.executeQuery(consulta);
-							int nRegistres = rs.getMetaData().getColumnCount();
-							String descripcio = "Consulta personalitzada";
-							String resultatSentencia = "";
-							while(rs.next()) {
-								for(int i=1; i<=nRegistres; i++) {
-									resultatSentencia += rs.getString(i);
-									if(i<nRegistres) {
-										resultatSentencia += " - ";
-									} // end-if
-								} // end-for
-								resultatSentencia += "\n";
-							} // end-while
-							mostrarDialeg(1, descripcio, resultatSentencia);
-							break;
-						case "INSERT":
-							PreparedStatement psInsertar = con.prepareStatement(consulta);
-							int resultatInsertar = psInsertar.executeUpdate();
-							JOptionPane.showMessageDialog(new JFrame(), tipusConsulta, "realitzat!", JOptionPane.INFORMATION_MESSAGE);
-							break;
-						case "UPDATE":
-							PreparedStatement psActualitzar = con.prepareStatement(consulta);
-							int resultatActualitzar = psActualitzar.executeUpdate();
-							JOptionPane.showMessageDialog(new JFrame(), tipusConsulta, "realitzat!", JOptionPane.INFORMATION_MESSAGE);
-							break;
-						case "DELETE":
-							PreparedStatement psBorrar = con.prepareStatement(consulta);
-							int resultadoBorrar = psBorrar.executeUpdate();
-							JOptionPane.showMessageDialog(new JFrame(), tipusConsulta, "realitzat!", JOptionPane.INFORMATION_MESSAGE);
-							break;
+							case "SELECT":
+								Statement stmt = con.createStatement();
+								ResultSet rs = stmt.executeQuery(consulta);
+								int nRegistres = rs.getMetaData().getColumnCount();
+								String descripcio = "Consulta personalitzada";
+								String resultatSentencia = "";
+								while(rs.next()) {
+									for(int i=1; i<=nRegistres; i++) {
+										resultatSentencia += rs.getString(i);
+										if(i<nRegistres) {
+											resultatSentencia += " - ";
+										} // end-if
+									} // end-for
+									resultatSentencia += "\n";
+								} // end-while
+								mostrarDialeg(1, descripcio, resultatSentencia);
+								break;
+							case "INSERT":
+							case "UPDATE":
+							case "DELETE":
+								PreparedStatement ps = con.prepareStatement(consulta);
+								int resultat = ps.executeUpdate();
+								JOptionPane.showMessageDialog(new JFrame(), tipusConsulta, "Consulta realitzada!", JOptionPane.INFORMATION_MESSAGE);
+								break;
 							default:
 								JOptionPane.showMessageDialog(new JFrame(), tipusConsulta, "ERROR en la consulta!", JOptionPane.ERROR_MESSAGE);
 						} // end-switch
@@ -348,6 +360,7 @@ public class Biblioteca extends JFrame {
 			btnExecConsulta.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 			btnExecConsulta.setBounds(266, 343, 134, 23);
 			contentPane.add(btnExecConsulta);
+			// END CONSULTA PERSONALITZADA
 			
 			// GUIA D'US: COM A DETALL, HE CONSIDERAT UTIL AFEGIR UNA GUIA AMB ELS EXEMPLES DE LES SENTENCIES QUE CONSTEN AL PDF DE L'ACTIVITAT COM UNA AJUDA RAPIDA
 			JButton btnGuia = new JButton("Guia d'\u00FAs");
@@ -359,13 +372,13 @@ public class Biblioteca extends JFrame {
 							+ "Qualsevol dubte que tingues, tambe el pots revisar la següent guia de SQL en: https://www.w3schools.com/MySQL/default.asp"
 							+ "\n\n\n"
 							+ "> Per a fer seleccions de dades:\n"
-							+ "SELECT * FROM nomTabla;\n"
+							+ "SELECT * FROM llibres;\n"
 							+ "> Per a insertar dades:\n"
-							+ "INSERT INTO nomTabla (camp1, camp2, ...) VALUES (?, ?, ...);\n"
+							+ "INSERT INTO llibres (titol,autor,anyNaixement,anyPublicacio,editorial,numPagines) VALUES (?,?,?,?,?,?);\n"
 							+ "> Per a actualitzar dades:\n"
-							+ "UPDATE nomTabla SET camp1 = 'valorCamp1' WHERE id = 5;\n"
+							+ "UPDATE llibres SET titol = 'valorTitol' WHERE idLlibre = 5;\n"
 							+ "> Per a esborrar dades:\n"
-							+ "DELETE FROM nomTabla WHERE id = 5;\n";
+							+ "DELETE FROM llibres WHERE idLlibre = 5;\n";
 					
 					mostrarDialeg(2, descripcio, consells);
 				} // end-actionPerformed
@@ -373,6 +386,7 @@ public class Biblioteca extends JFrame {
 			btnGuia.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 			btnGuia.setBounds(550, 372, 92, 23);
 			contentPane.add(btnGuia);
+			// END GUIA D'US
 			
 			// TANQUEM BUFFEREDREADER
 			br.close();
