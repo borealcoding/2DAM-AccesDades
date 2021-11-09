@@ -8,21 +8,15 @@ package es.florida.accesdades.ae4;
  * No s'ha fet servir el MVC per falta de temps, en aquest cas es fa servir unicament d'un unic fitxer java on, dividit per metodes, s'executara tota la app.
  */
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
 import java.awt.FlowLayout;
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-
 import java.awt.Font;
-import java.awt.Label;
 import java.awt.Color;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -30,7 +24,6 @@ import java.sql.Statement;
 import java.util.StringTokenizer;
 import java.awt.event.ActionEvent;
 import java.awt.SystemColor;
-import java.awt.Panel;
 
 public class Biblioteca extends JFrame {
 	// DECLARACIONS GLOBALS DE LES VARIABLES SWING
