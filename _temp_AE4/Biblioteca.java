@@ -30,6 +30,7 @@ public class Biblioteca {
 
 			String sentenciaInsercion = "INSERT INTO llibres (titol,autor,anyNaixement,anyPublicacio,editorial,numPagines) VALUES (?,?,?,?,?,?)";
 			PreparedStatement psInsertar = null;
+			ResultSet rsa = null;
 			
 			br.readLine();
 			
