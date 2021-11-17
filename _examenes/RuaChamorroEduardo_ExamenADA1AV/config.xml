@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<configurations>
+    <config1>
+        <url>jdbc:mysql://localhost:3306/destinacions</url>
+        <user>root</user>
+        <password>0000</password>
+    </config1>
+</configurations>
