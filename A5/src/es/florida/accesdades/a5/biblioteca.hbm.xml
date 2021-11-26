@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="es.florida.accesdades.a5">
+    <class name="Biblioteca" table="llibres">
+        <id name="idLlibre" column="idLlibre">
+            <generator class="increment"/>
+        </id>
+        <property name="titol" column="titol" type="string"/>
+        <property name="autor" column="autor" type="string"/>
+        <property name="anyNaixement" column="anyNaixement" type="string"/>
+        <property name="anyPublicacio" column="anyPublicacio" type="string"/>
+        <property name="editorial" column="editorial" type="string"/>
+        <property name="numPagines" column="numPagines" type="string"/>
+    </class>
+</hibernate-mapping>
