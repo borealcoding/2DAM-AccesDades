@@ -3,8 +3,8 @@
     "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
     "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="es.florida.accesdades.a5">
-    <class name="Biblioteca" table="llibres">
-        <id name="idLlibre" column="idLlibre">
+    <class name="Llibre" table="llibres">
+        <id name="identificador" column="idLlibre">
             <generator class="increment"/>
         </id>
         <property name="titol" column="titol" type="string"/>
