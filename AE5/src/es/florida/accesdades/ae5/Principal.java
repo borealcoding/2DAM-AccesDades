@@ -19,17 +19,7 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 
 public class Principal {
-	public static void mostrarBiblioteca() {
-		// Carrega la configuracio i crea una session factory
-		System.err.println("> CONFIGURANT CONEXIO D'HIBERNATE");
-		Configuration configuration = new Configuration().configure("hibernate.cfg.xml");
-		configuration.addClass(Llibre.class);
-		ServiceRegistry registry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
-		SessionFactory sessionFactory = configuration.buildSessionFactory(registry);
-		
-		System.err.println("> INICIANT SESSIO ...\n");
-		// Obri una nova sessio de la session factory
-		Session session = sessionFactory.openSession();
+	public static void mostrarBiblioteca(Session session) {	
 		session.beginTransaction();
 		System.err.println("> SESSIO INICIADA CORRECTAMENT\n");
 		
@@ -39,23 +29,12 @@ public class Principal {
 		for (Object obj : biblioteca) {
 			Llibre llibre = (Llibre) obj;
 			System.out.println(llibre.getIdentificador()+" - "+llibre.getTitol());
-		}
+		} // end-for
 		
-		// Commit de la transaccio i tanca de sessio
-		session.getTransaction().commit();
-		session.close();
+		session.getTransaction().commit(); // Commit de la transaccio
 	} // end-mostrarBiblioteca
 	
-	public static void mostrarLlibre(int idLlibre) {
-		System.err.println("> CONFIGURANT CONEXIO D'HIBERNATE");
-		Configuration configuration = new Configuration().configure("hibernate.cfg.xml");
-		configuration.addClass(Llibre.class);
-		ServiceRegistry registry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
-		SessionFactory sessionFactory = configuration.buildSessionFactory(registry);
-		
-		System.err.println("> INICIANT SESSIO ...\n");
-		// Obri una nova sessio de la session factory
-		Session session = sessionFactory.openSession();
+	public static void mostrarLlibre(int idLlibre, Session session) {
 		session.beginTransaction();
 		System.err.println("> SESSIO INICIADA CORRECTAMENT\n");
 		
@@ -73,30 +52,18 @@ public class Principal {
 			);
 		} // end-if-else
 		
-		// Commit de la transaccio i tanca de sessio
-		session.getTransaction().commit();
-		session.close();
+		session.getTransaction().commit(); // Commit de la transaccio
 	} // end-mostrarLlibre
 	
-	public static void afegirNouLlibre() {
-		// Carrega la configuracio i crea una session factory
-		System.err.println("> CONFIGURANT CONEXIO D'HIBERNATE");
-		Configuration configuration = new Configuration().configure("hibernate.cfg.xml");
-		configuration.addClass(Llibre.class);
-		ServiceRegistry registry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
-		SessionFactory sessionFactory = configuration.buildSessionFactory(registry);
-		
-		System.err.println("> INICIANT SESSIO ...\n");
-		// Obri una nova sessio de la session factory
-		Session session = sessionFactory.openSession();
-		session.beginTransaction();
-		System.err.println("> SESSIO INICIADA CORRECTAMENT\n");
-		
+	public static void afegirNouLlibre(Session session) {
 		Scanner sc = new Scanner(System.in);
 		String decisio = "";
 		System.out.println("Benvingut al sistema de creacio de llibres!"
 				+ "\nOmpli els seguents atributs per teclat...");
 		do {
+			session.beginTransaction();
+			System.err.println("> SESSIO INICIADA CORRECTAMENT\n");
+			
 			System.out.print("Titol: ");
 			String strTitol = sc.nextLine();
 			
@@ -127,43 +94,55 @@ public class Principal {
 			);
 			
 			Serializable id = session.save(llibreNou);
-			session.getTransaction().commit();
+			session.getTransaction().commit(); // Commit de la transaccio
 			
 			System.out.print("Vols afegir altre llibre? (s/n): ");
 			decisio = sc.nextLine();
 			System.out.println();
 		} while(decisio.equals("s"));
-		// Commit de la transaccio i tanca de sessio
-		session.close();
 	} // end-afegirNouLlibre
 	
-	public static void actualitzarLlibre() {
-		// Carrega la configuracio i crea una session factory
-		System.err.println("> CONFIGURANT CONEXIO D'HIBERNATE");
-		Configuration configuration = new Configuration().configure("hibernate.cfg.xml");
-		configuration.addClass(Llibre.class);
-		ServiceRegistry registry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
-		SessionFactory sessionFactory = configuration.buildSessionFactory(registry);
-		
-		System.err.println("> INICIANT SESSIO ...\n");
-		// Obri una nova sessio de la session factory
-		Session session = sessionFactory.openSession();
-		session.beginTransaction();
-		System.err.println("> SESSIO INICIADA CORRECTAMENT\n");
-		
-		Llibre llibreActualitzat = (Llibre) session.load(Llibre.class, 15);
-		llibreActualitzat.setAnyPublicacio("2019");
-		llibreActualitzat.setEditorial("Sargantana");
-		session.update(llibreActualitzat);
-		
-		// Commit de la transaccio i tanca de sessio
-		session.getTransaction().commit();
-		session.close();
+	public static void actualitzarLlibre(Session session) {
+		Scanner sc = new Scanner(System.in);
+		String decisio = "";
+		do {
+			session.beginTransaction();
+			System.err.println("> SESSIO INICIADA CORRECTAMENT\n");
+			
+			System.out.print("Indica l'ID del llibre que vols actualitzar: ");
+			Llibre llibreActualitzat = (Llibre) session.load(Llibre.class, Integer.parseInt(sc.nextLine()));
+			
+			System.out.print("Titol: ");
+			llibreActualitzat.setTitol(sc.nextLine());
+			
+			System.out.print("Autor: ");
+			llibreActualitzat.setAutor(sc.nextLine());
+			
+			System.out.print("Any Naixement: ");
+			llibreActualitzat.setAnyNaixement(sc.nextLine());
+			
+			System.out.print("Any Publicacio: ");
+			llibreActualitzat.setAnyPublicacio(sc.nextLine());
+			
+			System.out.print("Editorial: ");
+			llibreActualitzat.setEditorial(sc.nextLine());
+			
+			System.out.print("Num. Pagines: ");
+			llibreActualitzat.setNumPagines(sc.nextLine());
+			
+			session.update(llibreActualitzat); // Sentencia update
+			session.getTransaction().commit(); // Commit de la transaccio
+			
+			System.out.print("Vols actualitzar altre llibre? (s/n): ");
+			decisio = sc.nextLine();
+			System.out.println();
+
+		} while(decisio.equals("s"));
 	} // end-actualitzarLlibre
 	
 	public static void esborrarLlibre(int idLlibre) {
 		// Carrega la configuracio i crea una session factory
-		System.err.println("> CONFIGURANT CONEXIO D'HIBERNATE");
+		System.err.println("\n> CONFIGURANT CONEXIO D'HIBERNATE");
 		Configuration configuration = new Configuration().configure("hibernate.cfg.xml");
 		configuration.addClass(Llibre.class);
 		ServiceRegistry registry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
@@ -178,20 +157,30 @@ public class Principal {
 		Llibre llibreCremat = new Llibre();
 		llibreCremat.setIdentificador(idLlibre);
 		session.delete(llibreCremat);
-		
-		// Commit de la transaccio i tanca de sessio
-		session.getTransaction().commit();
-		session.close();
+
+		session.getTransaction().commit(); // Commit de la transaccio
+		session.close(); // Tanca la sessio
 	} // end-esborrarLlibre
 	
 	
 	public static void main(String[] args) {
-		// declaracions
+		// Carrega la configuracio i crea una session factory
+		System.err.println("\n> CONFIGURANT CONEXIO D'HIBERNATE");
+		Configuration configuration = new Configuration().configure("hibernate.cfg.xml");
+		configuration.addClass(Llibre.class);
+		ServiceRegistry registry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
+		SessionFactory sessionFactory = configuration.buildSessionFactory(registry);
+		
+		System.err.println("> INICIANT SESSIO ...\n");
+		Session session = sessionFactory.openSession(); // Obri una nova sessio de la session factory
+				
+		// Declaracions
 		Scanner sc = new Scanner(System.in);
 		System.out.println("----- BENVINGUT AL SISTEMA CRUD DE LA NOSTRA BIBLIOTECA -----");
 		System.out.println("Els valors son assignats anteriorment en el codi, no pel usuari");
 		boolean replay = true;
 		
+		// Aquest bucle te com a funcio la de seguir repetint el menu sempre i quant desitjem executar mes opcions
 		while(replay) {
 			replay = false; // per defecte estara en false 
 			System.out.println("Elegeix alguna de les seguents opcions!");
@@ -204,7 +193,7 @@ public class Principal {
 			System.out.print("\t> ");
 			switch(sc.nextLine()) {
 			case "1":
-				mostrarBiblioteca();
+				mostrarBiblioteca(session);
 				System.out.print("\nT'agradaria triar altra opcio?: (s/n): ");
 				if(sc.nextLine().equals("s"))
 					replay = true;
@@ -213,7 +202,7 @@ public class Principal {
 				break;
 			case "2":
 				System.out.print("Indica l'ID del llibre que vols consultar: ");
-				mostrarLlibre(sc.nextInt());
+				mostrarLlibre(Integer.parseInt(sc.nextLine()), session);
 				System.out.print("\nT'agradaria triar altra opcio?: (s/n): ");
 				if(sc.nextLine().equals("s"))
 					replay = true;
@@ -221,7 +210,7 @@ public class Principal {
 					System.out.println("Gracies per usar el nostre SW, adeu! :D");
 				break;
 			case "3":
-				afegirNouLlibre();
+				afegirNouLlibre(session);
 				System.out.print("\nT'agradaria triar altra opcio?: (s/n): ");
 				if(sc.nextLine().equals("s"))
 					replay = true;
@@ -229,7 +218,7 @@ public class Principal {
 					System.out.println("Gracies per usar el nostre SW, adeu! :D");
 				break;
 			case "4":
-				actualitzarLlibre();
+				actualitzarLlibre(session);
 				System.out.print("\nT'agradaria triar altra opcio?: (s/n): ");
 				if(sc.nextLine().equals("s"))
 					replay = true;
@@ -247,8 +236,6 @@ public class Principal {
 				break;
 			case "6":
 				System.out.println("Gracies per usar el nostre SW, adeu! :D");
-				sc.close();
-				System.exit(0);
 				break;
 			default:
 				// Missatge de error en cas de que no s'hi indique una de les opcions nomenades al menu.
@@ -256,6 +243,8 @@ public class Principal {
 				replay = true; // estableix que el bucle es tornara a repetir degut a que ens hem equivocat amb l'opcio
 			} // end-switch
 		} // end-while
-		sc.close();
+		sc.close(); // Tanca el teclat
+		session.close(); // Tanca la sessio
+		System.err.println("SESSIO TANCADA");
 	} // end-main
 } // end-class
