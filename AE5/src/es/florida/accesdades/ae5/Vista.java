@@ -23,13 +23,12 @@ public class Vista extends JFrame {
 	private JPanel contentPane;
 	// DECLARACIONS STATIC (AQUESTES VARIABLES S'USEN EN DIVERSOS METODES)
 	static Session session;
-	static String resultatSentencia = "", infoSentencia = "";
-	static JLabel tagIdLlibre, tagTitol, tagAutor, tagAnyN, tagAnyP, tagEditorial, tagNumPag, tagDialog;
-	static JTextField txtFIdLlibre, txtFTitol, txtFAutor, txtFAnyN, txtFAnyP, txtFEditorial, txtFNumPag;
+	//static String resultatSentencia = "", infoSentencia = "";
+	//static JLabel tagIdLlibre;
+	//static JTextField txtFIdLlibre, txtFTitol, txtFAutor, txtFAnyN, txtFAnyP, txtFEditorial, txtFNumPag;
 	
 	public Vista() {
 		visualitzar();
-		
 	}
 	
 	@SuppressWarnings("null")
@@ -38,101 +37,117 @@ public class Vista extends JFrame {
         	JDialog jd = new JDialog(new JFrame());
 			jd.getContentPane().setBackground(new Color(3, 131, 135));
 			
-			JLabel tagTitolJd = new JLabel(infoSentencia);
+			JLabel tagTitolJd = new JLabel("");
 	        tagTitolJd.setFont(new Font("Segoe UI Light", Font.PLAIN, 16));
 	        tagTitolJd.setForeground(Color.WHITE);
-	        
-	        // CARACTERISTIQUES DEL DIALEG 1
-	        JTextArea txtA;
-	        txtA = new JTextArea();
-			txtA.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-			txtA.setLineWrap(true);
-			txtA.setEditable(false);
-			txtA.setBounds(10,47,632,500);
-			txtA.setText(resultatSentencia);
-			
+	       
 			// CARACTERISTIQUES COMUNES DELS DIALEGS 2, 3 I 4
 
-        	txtFIdLlibre = new JTextField();
+			JTextField txtFIdLlibre = new JTextField();
         	txtFIdLlibre.setFont(new Font("Segoe UI", Font.PLAIN, 11));
     		txtFIdLlibre.setBounds(124, 66, 86, 28);
     		txtFIdLlibre.setColumns(8);
     		
-    		tagIdLlibre = new JLabel("ID llibre");
+    		JLabel tagIdLlibre = new JLabel("ID llibre");
     		tagIdLlibre.setFont(new Font("Segoe UI", Font.PLAIN, 11));
     		tagIdLlibre.setForeground(Color.WHITE);
     		tagIdLlibre.setBounds(39, 69, 46, 14);
     		
-    		txtFTitol = new JTextField();
+    		JTextField txtFTitol = new JTextField();
     		txtFTitol.setFont(new Font("Segoe UI", Font.PLAIN, 11));
     		txtFTitol.setBounds(124, 111, 397, 28);
     		txtFTitol.setColumns(10);
     		
-    		tagTitol = new JLabel("Titol");
+    		JLabel tagTitol = new JLabel("Titol");
     		tagTitol.setFont(new Font("Segoe UI", Font.PLAIN, 11));
     		tagTitol.setForeground(Color.WHITE);
     		tagTitol.setBounds(39, 114, 46, 14);
     		
-    		txtFAutor = new JTextField();
+    		JTextField txtFAutor = new JTextField();
     		txtFAutor.setFont(new Font("Segoe UI", Font.PLAIN, 11));
     		txtFAutor.setBounds(124, 154, 397, 28);
     		txtFAutor.setColumns(10);
     		
-    		tagAutor = new JLabel("Autor");
+    		JLabel tagAutor = new JLabel("Autor");
     		tagAutor.setFont(new Font("Segoe UI", Font.PLAIN, 11));
     		tagAutor.setForeground(Color.WHITE);
     		tagAutor.setBounds(39, 157, 46, 14);
     		
-    		txtFAnyN = new JTextField();
+    		JTextField txtFAnyN = new JTextField();
     		txtFAnyN.setFont(new Font("Segoe UI", Font.PLAIN, 11));
     		txtFAnyN.setBounds(124, 196, 86, 28);
     		txtFAnyN.setColumns(10);
     		
-    		tagAnyN = new JLabel("Any Naixement");
+    		JLabel tagAnyN = new JLabel("Any Naixement");
     		tagAnyN.setFont(new Font("Segoe UI", Font.PLAIN, 11));
     		tagAnyN.setForeground(Color.WHITE);
     		tagAnyN.setBounds(39, 199, 102, 14);
     		
-    		tagAnyP = new JLabel("Any Publicaci\u00F3");
+    		JLabel tagAnyP = new JLabel("Any Publicaci\u00F3");
     		tagAnyP.setFont(new Font("Segoe UI", Font.PLAIN, 11));
     		tagAnyP.setForeground(Color.WHITE);
     		tagAnyP.setBounds(220, 199, 86, 14);
     		
-    		txtFAnyP = new JTextField();
+    		JTextField txtFAnyP = new JTextField();
     		txtFAnyP.setFont(new Font("Segoe UI", Font.PLAIN, 11));
     		txtFAnyP.setBounds(301, 196, 86, 28);
     		txtFAnyP.setColumns(10);
     		
-    		txtFEditorial = new JTextField();
+    		JTextField txtFEditorial = new JTextField();
     		txtFEditorial.setFont(new Font("Segoe UI", Font.PLAIN, 11));
     		txtFEditorial.setBounds(124, 239, 238, 28);
     		txtFEditorial.setColumns(10);
     		
-    		tagEditorial = new JLabel("Editorial");
+    		JLabel tagEditorial = new JLabel("Editorial");
     		tagEditorial.setFont(new Font("Segoe UI", Font.PLAIN, 11));
     		tagEditorial.setForeground(Color.WHITE);
     		tagEditorial.setBounds(39, 242, 46, 14);
     		
-    		tagNumPag = new JLabel("N\u00BA p\u00E0gines");
+    		JLabel tagNumPag = new JLabel("N\u00BA p\u00E0gines");
     		tagNumPag.setFont(new Font("Segoe UI", Font.PLAIN, 11));
     		tagNumPag.setForeground(Color.WHITE);
     		tagNumPag.setBounds(382, 242, 67, 14);
     		
-    		txtFNumPag = new JTextField();
+    		JTextField txtFNumPag = new JTextField();
     		txtFNumPag.setFont(new Font("Segoe UI", Font.PLAIN, 11));
     		txtFNumPag.setBounds(449, 239, 72, 28);
     		txtFNumPag.setColumns(10);
     		
-    		tagDialog = new JLabel("Titol descriptiu");
-    		tagDialog.setHorizontalAlignment(SwingConstants.CENTER);
-    		tagDialog.setForeground(Color.WHITE);
-    		tagDialog.setFont(new Font("Segoe UI Light", Font.PLAIN, 21));
-    		tagDialog.setBounds(172, 11, 215, 28);
+//    		JLabel tagDialog = new JLabel("Titol descriptiu");
+//    		tagDialog.setHorizontalAlignment(SwingConstants.CENTER);
+//    		tagDialog.setForeground(Color.WHITE);
+//    		tagDialog.setFont(new Font("Segoe UI Light", Font.PLAIN, 21));
+//    		tagDialog.setBounds(172, 11, 215, 28);
     		
 	        
 	        if(dialogId == 1) {
+	        	session.beginTransaction();
+	        	// CARACTERISTIQUES DEL DIALEG 1
 	        	jd.getContentPane().setLayout(new FlowLayout()); // LAYOUT DEL DIALEG QUE MOSTRARA TOTS ELS TITOLS DE LA BIBLIOTECA
 		        jd.setBounds(100, 100, 668, 445); // DIMENSIONS DEL JDIALOG
+		        
+				tagTitolJd.setText("----- LLISTA DE LLIBRES -----");
+		        
+		        JTextArea txtA;
+		        txtA = new JTextArea();
+				txtA.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+				txtA.setLineWrap(true);
+				txtA.setEditable(false);
+				txtA.setBounds(10,47,632,500);
+				
+				
+				System.err.println("> SESSIO INICIADA CORRECTAMENT\n");
+				String resultatSentencia = "";
+				List biblioteca = new ArrayList();
+				biblioteca = session.createQuery("FROM Llibre").list();
+				for (Object obj : biblioteca) {
+					Llibre llibre = (Llibre) obj;
+					resultatSentencia += llibre.getIdentificador()+" - "+llibre.getTitol()+"\n";
+				} // end-for
+			
+				txtA.setText(resultatSentencia);
+				session.getTransaction().commit(); // Commit de la transaccio
+	
 		        // VISUALITZACIO DELS COMPONENTS DEL JDIALOG
 		        jd.getContentPane().add(tagTitolJd);
 		        jd.getContentPane().add(txtA);
@@ -142,6 +157,7 @@ public class Vista extends JFrame {
 	        	jd.setBounds(100, 100, 585, 361); // DIMENSIONS DEL JDIALOG
 	        	
 	        	// MODIFICACIONS DE CARACTERISTIQUES ESPECIFIQUES PER A AQUEST DIALEG
+				tagTitolJd.setText("----- DADES DEL LLIBRE -----");
 	        	txtFIdLlibre.setEditable(true);
 	    		txtFTitol.setEditable(false);
 	    		txtFAutor.setEditable(false);
@@ -149,11 +165,34 @@ public class Vista extends JFrame {
 	    		txtFAnyP.setEditable(false);
 	    		txtFEditorial.setEditable(false);
 	    		txtFNumPag.setEditable(false);
+
 	    		JButton btnExecucio = new JButton("Generar informaci\u00F3 per l'ID");
+	    		btnExecucio.addActionListener(new ActionListener() {
+	    			public void actionPerformed(ActionEvent e) {
+	    	        	session.beginTransaction();
+	    				System.err.println("> SESSIO INICIADA CORRECTAMENT\n");
+	    				
+	    				int id = Integer.parseInt(txtFIdLlibre.getText());
+	    				Llibre llibre = (Llibre) session.get(Llibre.class, id);
+	    				if(llibre==null) {
+	    					JOptionPane.showMessageDialog(new JFrame(), id, "ERROR! No s'ha trobat cap llibre", JOptionPane.ERROR_MESSAGE);
+	    				} else {
+	    					txtFTitol.setText(llibre.getTitol());
+	    					txtFAutor.setText(llibre.getAutor());
+	    					txtFAnyN.setText(llibre.getAnyNaixement());
+	    					txtFAnyP.setText(llibre.getAnyPublicacio());
+	    					txtFEditorial.setText(llibre.getEditorial());
+	    					txtFNumPag.setText(llibre.getNumPagines());
+	    					
+	    				} // end-if-else
+	    				session.getTransaction().commit(); // Commit de la transaccio
+	    			}
+	    		});
 	    		btnExecucio.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 	    		btnExecucio.setBounds(231, 65, 171, 28);
 
 		        // VISUALITZACIO DELS COMPONENTS DEL JDIALOG
+	    		jd.getContentPane().add(tagTitolJd);
 	    		jd.getContentPane().add(txtFIdLlibre);
 	    		jd.getContentPane().add(tagIdLlibre);
 	    		jd.getContentPane().add(txtFTitol);
@@ -168,7 +207,6 @@ public class Vista extends JFrame {
 	    		jd.getContentPane().add(tagEditorial);
 	    		jd.getContentPane().add(tagNumPag);
 	    		jd.getContentPane().add(txtFNumPag);
-	    		jd.getContentPane().add(tagDialog);
 	    		jd.getContentPane().add(btnExecucio);
 	        } // end-if
 	        if(dialogId == 3) {
@@ -183,10 +221,16 @@ public class Vista extends JFrame {
 	    		txtFEditorial.setEditable(true);
 	    		txtFNumPag.setEditable(true);
 	    		JButton btnExecucio = new JButton("Crear llibre");
+	    		btnExecucio.addActionListener(new ActionListener() {
+	    			public void actionPerformed(ActionEvent e) {
+	    				
+	    			}
+	    		});
 	    		btnExecucio.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 	    		btnExecucio.setBounds(220, 63, 124, 28);
 	    		
 		        // VISUALITZACIO DELS COMPONENTS DEL JDIALOG
+	    		jd.getContentPane().add(tagTitolJd);
 	    		jd.getContentPane().add(txtFTitol);
 	    		jd.getContentPane().add(txtFAutor);
 	    		jd.getContentPane().add(tagAutor);
@@ -197,7 +241,6 @@ public class Vista extends JFrame {
 	    		jd.getContentPane().add(tagEditorial);
 	    		jd.getContentPane().add(tagNumPag);
 	    		jd.getContentPane().add(txtFNumPag);
-	    		jd.getContentPane().add(tagDialog);
 	    		jd.getContentPane().add(btnExecucio);
 	        } // end-if
 	        if(dialogId == 4) {
@@ -212,11 +255,18 @@ public class Vista extends JFrame {
 	    		txtFAnyP.setEditable(true);
 	    		txtFEditorial.setEditable(true);
 	    		txtFNumPag.setEditable(true);
+	    		
 	    		JButton btnExecucio = new JButton("Modificar llibre");
+	    		btnExecucio.addActionListener(new ActionListener() {
+	    			public void actionPerformed(ActionEvent e) {
+	    				
+	    			}
+	    		});
 	    		btnExecucio.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 	    		btnExecucio.setBounds(231, 65, 171, 28);
 	        	
 		        // VISUALITZACIO DELS COMPONENTS DEL JDIALOG
+	    		jd.getContentPane().add(tagTitolJd);
 	    		jd.getContentPane().add(txtFIdLlibre);
 	    		jd.getContentPane().add(tagIdLlibre);
 	    		jd.getContentPane().add(txtFIdLlibre);
@@ -231,7 +281,6 @@ public class Vista extends JFrame {
 	    		jd.getContentPane().add(tagEditorial);
 	    		jd.getContentPane().add(tagNumPag);
 	    		jd.getContentPane().add(txtFNumPag);
-	    		jd.getContentPane().add(tagDialog);
 	    		jd.getContentPane().add(btnExecucio);
 	        } // end-if
 	        if(dialogId == 5) {
@@ -245,35 +294,34 @@ public class Vista extends JFrame {
 		} // end-try-catch
 	} // end-mostrarDialeg
 	
-	public static void mostrarBiblioteca(Session session) {	
-		session.beginTransaction();
-		//String resultatSentencia = "", infoSentencia = "";
-		System.err.println("> SESSIO INICIADA CORRECTAMENT\n");
-		
-		List biblioteca = new ArrayList();
-		biblioteca = session.createQuery("FROM Llibre").list();
-		//System.out.println("----- LLISTA DE LLIBRES -----");
-		infoSentencia += "----- LLISTA DE LLIBRES -----";
-		for (Object obj : biblioteca) {
-			Llibre llibre = (Llibre) obj;
-			//System.out.println(llibre.getIdentificador()+" - "+llibre.getTitol());
-			resultatSentencia += llibre.getIdentificador()+" - "+llibre.getTitol()+"\n";
-		} // end-for
-		
-		mostrarDialeg(1);
-		session.getTransaction().commit(); // Commit de la transaccio
-	} // end-mostrarBiblioteca
+//	public static void mostrarBiblioteca(Session session) {	
+//		session.beginTransaction();
+//		//String resultatSentencia = "", infoSentencia = "";
+//		System.err.println("> SESSIO INICIADA CORRECTAMENT\n");
+//		String infoSentencia = "", resultatSentencia = "";
+//		List biblioteca = new ArrayList();
+//		biblioteca = session.createQuery("FROM Llibre").list();
+//		//System.out.println("----- LLISTA DE LLIBRES -----");
+//		infoSentencia += "----- LLISTA DE LLIBRES -----";
+//		for (Object obj : biblioteca) {
+//			Llibre llibre = (Llibre) obj;
+//			//System.out.println(llibre.getIdentificador()+" - "+llibre.getTitol());
+//			resultatSentencia += llibre.getIdentificador()+" - "+llibre.getTitol()+"\n";
+//		} // end-for
+//		
+//		mostrarDialeg(1);
+//		session.getTransaction().commit(); // Commit de la transaccio
+//	} // end-mostrarBiblioteca
 	
-	public static void mostrarLlibre(Session session) {
-		session.beginTransaction();
-		System.err.println("> SESSIO INICIADA CORRECTAMENT\n");
-		
-		int idLlibre = Integer.parseInt(txtFIdLlibre.getText());
-		Llibre llibre = (Llibre) session.get(Llibre.class, idLlibre);
-		if(llibre==null) {
-			//System.err.println("ERROR! No s'ha trobat cap llibre amb l'ID: "+idLlibre);
-			JOptionPane.showMessageDialog(new JFrame(), idLlibre, "ERROR! No s'ha trobat cap llibre", JOptionPane.ERROR_MESSAGE);
-		} else {
+//	public static void mostrarLlibre(Session session, int idLlibre) {
+//		session.beginTransaction();
+//		System.err.println("> SESSIO INICIADA CORRECTAMENT\n");
+//		
+//		Llibre llibre = (Llibre) session.get(Llibre.class, idLlibre);
+//		if(llibre==null) {
+//			//System.err.println("ERROR! No s'ha trobat cap llibre amb l'ID: "+idLlibre);
+//			JOptionPane.showMessageDialog(new JFrame(), idLlibre, "ERROR! No s'ha trobat cap llibre", JOptionPane.ERROR_MESSAGE);
+//		} else {
 //			System.out.println("----- DADES DEL LLIBRE -----"
 //					+ "\nTitol: "+llibre.getTitol()+
 //					"\nAutor: "+llibre.getAutor()+
@@ -282,17 +330,18 @@ public class Vista extends JFrame {
 //					"\nEditorial: "+llibre.getEditorial()+
 //					"\nNum pagines: "+llibre.getNumPagines()
 //			);
-			txtFTitol.setText(llibre.getTitol());
-			txtFAutor.setText(llibre.getAutor());
-			txtFAnyN.setText(llibre.getAnyNaixement());
-			txtFAnyP.setText(llibre.getAnyPublicacio());
-			txtFEditorial.setText(llibre.getEditorial());
-			txtFNumPag.setText(llibre.getNumPagines());
-			
-		} // end-if-else
-		mostrarDialeg(2);
-		session.getTransaction().commit(); // Commit de la transaccio
-	} // end-mostrarLlibre
+//			txtFTitol.setText("hola");
+////			txtFTitol.setText(llibre.getTitol());
+////			txtFAutor.setText(llibre.getAutor());
+////			txtFAnyN.setText(llibre.getAnyNaixement());
+////			txtFAnyP.setText(llibre.getAnyPublicacio());
+////			txtFEditorial.setText(llibre.getEditorial());
+////			txtFNumPag.setText(llibre.getNumPagines());
+//			
+//		} // end-if-else
+//		
+//		session.getTransaction().commit(); // Commit de la transaccio
+//	} // end-mostrarLlibre
 	
 	public static void afegirNouLlibre(Session session) {
 		Scanner sc = new Scanner(System.in);
@@ -412,14 +461,14 @@ public class Vista extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		tagTitol = new JLabel("Men\u00FA d'opcions d'Hibernate");
+		JLabel tagTitol = new JLabel("Men\u00FA d'opcions d'Hibernate");
 		tagTitol.setForeground(Color.WHITE);
 		tagTitol.setHorizontalAlignment(SwingConstants.CENTER);
 		tagTitol.setFont(new Font("Segoe UI Light", Font.PLAIN, 21));
 		tagTitol.setBounds(30, 11, 434, 25);
 		contentPane.add(tagTitol);
 		
-		tagAutor = new JLabel("Alumne: Eduardo Ru\u00E1 Chamorro");
+		JLabel tagAutor = new JLabel("Alumne: Eduardo Ru\u00E1 Chamorro");
 		tagAutor.setForeground(Color.WHITE);
 		tagAutor.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 		tagAutor.setBounds(10, 372, 176, 23);
@@ -429,7 +478,7 @@ public class Vista extends JFrame {
 		btnMostrarBiblioteca = new JButton("Mostrar biblioteca");
 		btnMostrarBiblioteca.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {				
-				mostrarBiblioteca(session);
+				mostrarDialeg(1);
 				
 			}
 		});
@@ -445,7 +494,8 @@ public class Vista extends JFrame {
 		btnMostrarLlibre.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// ACCIONS QUE S'EXECUTARAN AL PRESSSIONAR SOBRE AQUEST BOTO
-				mostrarLlibre(session);
+				mostrarDialeg(2);
+				
 			}
 		});
 		btnMostrarLlibre.setFont(new Font("Segoe UI", Font.PLAIN, 11));
