@@ -12,11 +12,12 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JTextField;
 import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class Pruebas extends JFrame {
 
 	private JPanel contentPane;
-	private JTextField txtFIdLlibre;
 	private JTextField txtFTitol;
 	private JTextField txtFAutor;
 	private JTextField txtFAnyN;
@@ -53,18 +54,6 @@ public class Pruebas extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		
-		txtFIdLlibre = new JTextField();
-		txtFIdLlibre.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-		txtFIdLlibre.setBounds(124, 66, 86, 28);
-		contentPane.add(txtFIdLlibre);
-		txtFIdLlibre.setColumns(8);
-		
-		JLabel tagIdLlibre = new JLabel("ID llibre");
-		tagIdLlibre.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-		tagIdLlibre.setForeground(Color.WHITE);
-		tagIdLlibre.setBounds(39, 69, 46, 14);
-		contentPane.add(tagIdLlibre);
 		
 		txtFTitol = new JTextField();
 		txtFTitol.setEditable(false);
@@ -138,16 +127,20 @@ public class Pruebas extends JFrame {
 		contentPane.add(txtFNumPag);
 		txtFNumPag.setColumns(10);
 		
-		JLabel tagDialog = new JLabel("Titol descriptiu");
+		JLabel tagDialog = new JLabel("Sistema de creaci\u00F3 de llibres");
 		tagDialog.setHorizontalAlignment(SwingConstants.CENTER);
 		tagDialog.setForeground(Color.WHITE);
 		tagDialog.setFont(new Font("Segoe UI Light", Font.PLAIN, 21));
-		tagDialog.setBounds(172, 11, 215, 28);
+		tagDialog.setBounds(150, 11, 268, 28);
 		contentPane.add(tagDialog);
 		
-		JButton tagGenerarInfo = new JButton("Generar informaci\u00F3 per l'ID");
+		JButton tagGenerarInfo = new JButton("Crear llibre");
+		tagGenerarInfo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
 		tagGenerarInfo.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-		tagGenerarInfo.setBounds(231, 66, 171, 28);
+		tagGenerarInfo.setBounds(220, 63, 124, 28);
 		contentPane.add(tagGenerarInfo);
 	}
 }

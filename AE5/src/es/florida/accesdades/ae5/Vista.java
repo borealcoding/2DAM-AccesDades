@@ -18,152 +18,228 @@ import java.util.Scanner;
 import java.awt.event.ActionEvent;
 
 public class Vista extends JFrame {
-	
+	// DECLARACIONS GENERALS
 	private JButton btnMostrarBiblioteca, btnMostrarLlibre, btnAfegir, btnModificar, btnEsborrar;
-	private JLabel tagTitol, tagAutor;
 	private JPanel contentPane;
+	// DECLARACIONS STATIC (AQUESTES VARIABLES S'USEN EN DIVERSOS METODES)
 	static Session session;
+	static String resultatSentencia = "", infoSentencia = "";
+	static JLabel tagIdLlibre, tagTitol, tagAutor, tagAnyN, tagAnyP, tagEditorial, tagNumPag, tagDialog;
+	static JTextField txtFIdLlibre, txtFTitol, txtFAutor, txtFAnyN, txtFAnyP, txtFEditorial, txtFNumPag;
 	
 	public Vista() {
 		visualitzar();
 		
 	}
 	
-	public static void mostrarDialeg(int dialogId, String descripcio, String informacio) {
+	@SuppressWarnings("null")
+	public static void mostrarDialeg(int dialogId) {
 		try {
         	JDialog jd = new JDialog(new JFrame());
 			jd.getContentPane().setBackground(new Color(3, 131, 135));
 			
-			JLabel tagTitolJd = new JLabel(descripcio);
+			JLabel tagTitolJd = new JLabel(infoSentencia);
 	        tagTitolJd.setFont(new Font("Segoe UI Light", Font.PLAIN, 16));
 	        tagTitolJd.setForeground(Color.WHITE);
 	        
+	        // CARACTERISTIQUES DEL DIALEG 1
+	        JTextArea txtA;
+	        txtA = new JTextArea();
+			txtA.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+			txtA.setLineWrap(true);
+			txtA.setEditable(false);
+			txtA.setBounds(10,47,632,500);
+			txtA.setText(resultatSentencia);
+			
+			// CARACTERISTIQUES COMUNES DELS DIALEGS 2, 3 I 4
+
+        	txtFIdLlibre = new JTextField();
+        	txtFIdLlibre.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+    		txtFIdLlibre.setBounds(124, 66, 86, 28);
+    		txtFIdLlibre.setColumns(8);
+    		
+    		tagIdLlibre = new JLabel("ID llibre");
+    		tagIdLlibre.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+    		tagIdLlibre.setForeground(Color.WHITE);
+    		tagIdLlibre.setBounds(39, 69, 46, 14);
+    		
+    		txtFTitol = new JTextField();
+    		txtFTitol.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+    		txtFTitol.setBounds(124, 111, 397, 28);
+    		txtFTitol.setColumns(10);
+    		
+    		tagTitol = new JLabel("Titol");
+    		tagTitol.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+    		tagTitol.setForeground(Color.WHITE);
+    		tagTitol.setBounds(39, 114, 46, 14);
+    		
+    		txtFAutor = new JTextField();
+    		txtFAutor.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+    		txtFAutor.setBounds(124, 154, 397, 28);
+    		txtFAutor.setColumns(10);
+    		
+    		tagAutor = new JLabel("Autor");
+    		tagAutor.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+    		tagAutor.setForeground(Color.WHITE);
+    		tagAutor.setBounds(39, 157, 46, 14);
+    		
+    		txtFAnyN = new JTextField();
+    		txtFAnyN.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+    		txtFAnyN.setBounds(124, 196, 86, 28);
+    		txtFAnyN.setColumns(10);
+    		
+    		tagAnyN = new JLabel("Any Naixement");
+    		tagAnyN.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+    		tagAnyN.setForeground(Color.WHITE);
+    		tagAnyN.setBounds(39, 199, 102, 14);
+    		
+    		tagAnyP = new JLabel("Any Publicaci\u00F3");
+    		tagAnyP.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+    		tagAnyP.setForeground(Color.WHITE);
+    		tagAnyP.setBounds(220, 199, 86, 14);
+    		
+    		txtFAnyP = new JTextField();
+    		txtFAnyP.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+    		txtFAnyP.setBounds(301, 196, 86, 28);
+    		txtFAnyP.setColumns(10);
+    		
+    		txtFEditorial = new JTextField();
+    		txtFEditorial.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+    		txtFEditorial.setBounds(124, 239, 238, 28);
+    		txtFEditorial.setColumns(10);
+    		
+    		tagEditorial = new JLabel("Editorial");
+    		tagEditorial.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+    		tagEditorial.setForeground(Color.WHITE);
+    		tagEditorial.setBounds(39, 242, 46, 14);
+    		
+    		tagNumPag = new JLabel("N\u00BA p\u00E0gines");
+    		tagNumPag.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+    		tagNumPag.setForeground(Color.WHITE);
+    		tagNumPag.setBounds(382, 242, 67, 14);
+    		
+    		txtFNumPag = new JTextField();
+    		txtFNumPag.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+    		txtFNumPag.setBounds(449, 239, 72, 28);
+    		txtFNumPag.setColumns(10);
+    		
+    		tagDialog = new JLabel("Titol descriptiu");
+    		tagDialog.setHorizontalAlignment(SwingConstants.CENTER);
+    		tagDialog.setForeground(Color.WHITE);
+    		tagDialog.setFont(new Font("Segoe UI Light", Font.PLAIN, 21));
+    		tagDialog.setBounds(172, 11, 215, 28);
+    		
+	        
 	        if(dialogId == 1) {
-	        	jd.getContentPane().setLayout(new FlowLayout());
-		        jd.setBounds(100, 100, 668, 445);
-	        	
-				JTextArea txtA;
-		        txtA = new JTextArea();
-				txtA.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-				txtA.setLineWrap(true);
-				txtA.setEditable(false);
-				txtA.setBounds(10,47,632,500);
-				txtA.setText(informacio);
-				
+	        	jd.getContentPane().setLayout(new FlowLayout()); // LAYOUT DEL DIALEG QUE MOSTRARA TOTS ELS TITOLS DE LA BIBLIOTECA
+		        jd.setBounds(100, 100, 668, 445); // DIMENSIONS DEL JDIALOG
+		        // VISUALITZACIO DELS COMPONENTS DEL JDIALOG
 		        jd.getContentPane().add(tagTitolJd);
 		        jd.getContentPane().add(txtA);
-		     
 	        } // end-if
 	        if(dialogId == 2) {
-	        	jd.getContentPane().setLayout(null);
-	        	jd.setBounds(100, 100, 585, 361);
+	        	jd.getContentPane().setLayout(null); // LAYOUT DEL DIALEG PER AL METODE DE CONSULTAR LLIBRE
+	        	jd.setBounds(100, 100, 585, 361); // DIMENSIONS DEL JDIALOG
 	        	
-	        	JTextField txtFIdLlibre = new JTextField();
-	        	txtFIdLlibre.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-	    		txtFIdLlibre.setBounds(124, 66, 86, 28);
-	    		jd.getContentPane().add(txtFIdLlibre);
-	    		txtFIdLlibre.setColumns(8);
-	    		
-	    		JLabel tagIdLlibre = new JLabel("ID llibre");
-	    		tagIdLlibre.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-	    		tagIdLlibre.setForeground(Color.WHITE);
-	    		tagIdLlibre.setBounds(39, 69, 46, 14);
-	    		jd.getContentPane().add(tagIdLlibre);
-	    		
-	    		JTextField txtFTitol = new JTextField();
-	    		txtFTitol.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+	        	// MODIFICACIONS DE CARACTERISTIQUES ESPECIFIQUES PER A AQUEST DIALEG
+	        	txtFIdLlibre.setEditable(true);
 	    		txtFTitol.setEditable(false);
-	    		txtFTitol.setBounds(124, 111, 397, 28);
-	    		jd.getContentPane().add(txtFTitol);
-	    		txtFTitol.setColumns(10);
-	    		
-	    		JLabel tagTitol = new JLabel("Titol");
-	    		tagTitol.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-	    		tagTitol.setForeground(Color.WHITE);
-	    		tagTitol.setBounds(39, 114, 46, 14);
-	    		jd.getContentPane().add(tagTitol);
-	    		
-	    		JTextField txtFAutor = new JTextField();
-	    		txtFAutor.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 	    		txtFAutor.setEditable(false);
-	    		txtFAutor.setBounds(124, 154, 397, 28);
-	    		jd.getContentPane().add(txtFAutor);
-	    		txtFAutor.setColumns(10);
-	    		
-	    		JLabel tagAutor = new JLabel("Autor");
-	    		tagAutor.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-	    		tagAutor.setForeground(Color.WHITE);
-	    		tagAutor.setBounds(39, 157, 46, 14);
-	    		jd.getContentPane().add(tagAutor);
-	    		
-	    		JTextField txtFAnyN = new JTextField();
-	    		txtFAnyN.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 	    		txtFAnyN.setEditable(false);
-	    		txtFAnyN.setBounds(124, 196, 86, 28);
-	    		jd.getContentPane().add(txtFAnyN);
-	    		txtFAnyN.setColumns(10);
-	    		
-	    		JLabel tagAnyN = new JLabel("Any Naixement");
-	    		tagAnyN.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-	    		tagAnyN.setForeground(Color.WHITE);
-	    		tagAnyN.setBounds(39, 199, 102, 14);
-	    		jd.getContentPane().add(tagAnyN);
-	    		
-	    		JLabel tagAnyP = new JLabel("Any Publicaci\u00F3");
-	    		tagAnyP.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-	    		tagAnyP.setForeground(Color.WHITE);
-	    		tagAnyP.setBounds(220, 199, 86, 14);
-	    		jd.getContentPane().add(tagAnyP);
-	    		
-	    		JTextField txtFAnyP = new JTextField();
-	    		txtFAnyP.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 	    		txtFAnyP.setEditable(false);
-	    		txtFAnyP.setBounds(301, 196, 86, 28);
-	    		jd.getContentPane().add(txtFAnyP);
-	    		txtFAnyP.setColumns(10);
-	    		
-	    		JTextField txtFEditorial = new JTextField();
-	    		txtFEditorial.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 	    		txtFEditorial.setEditable(false);
-	    		txtFEditorial.setBounds(124, 239, 238, 28);
-	    		jd.getContentPane().add(txtFEditorial);
-	    		txtFEditorial.setColumns(10);
-	    		
-	    		JLabel tagEditorial = new JLabel("Editorial");
-	    		tagEditorial.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-	    		tagEditorial.setForeground(Color.WHITE);
-	    		tagEditorial.setBounds(39, 242, 46, 14);
-	    		jd.getContentPane().add(tagEditorial);
-	    		
-	    		JLabel tagNumPag = new JLabel("N\u00BA p\u00E0gines");
-	    		tagNumPag.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-	    		tagNumPag.setForeground(Color.WHITE);
-	    		tagNumPag.setBounds(382, 242, 67, 14);
-	    		jd.getContentPane().add(tagNumPag);
-	    		
-	    		JTextField txtFNumPag = new JTextField();
-	    		txtFNumPag.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 	    		txtFNumPag.setEditable(false);
-	    		txtFNumPag.setBounds(449, 239, 72, 28);
+	    		JButton btnExecucio = new JButton("Generar informaci\u00F3 per l'ID");
+	    		btnExecucio.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+	    		btnExecucio.setBounds(231, 65, 171, 28);
+
+		        // VISUALITZACIO DELS COMPONENTS DEL JDIALOG
+	    		jd.getContentPane().add(txtFIdLlibre);
+	    		jd.getContentPane().add(tagIdLlibre);
+	    		jd.getContentPane().add(txtFTitol);
+	    		jd.getContentPane().add(tagTitol);
+	    		jd.getContentPane().add(txtFAutor);
+	    		jd.getContentPane().add(tagAutor);
+	    		jd.getContentPane().add(txtFAnyN);
+	    		jd.getContentPane().add(tagAnyN);
+	    		jd.getContentPane().add(txtFAnyP);
+	    		jd.getContentPane().add(tagAnyP);
+	    		jd.getContentPane().add(txtFEditorial);
+	    		jd.getContentPane().add(tagEditorial);
+	    		jd.getContentPane().add(tagNumPag);
 	    		jd.getContentPane().add(txtFNumPag);
-	    		txtFNumPag.setColumns(10);
-	    		
-	    		JLabel tagDialog = new JLabel("Titol descriptiu");
-	    		tagDialog.setHorizontalAlignment(SwingConstants.CENTER);
-	    		tagDialog.setForeground(Color.WHITE);
-	    		tagDialog.setFont(new Font("Segoe UI Light", Font.PLAIN, 21));
-	    		tagDialog.setBounds(172, 11, 215, 28);
 	    		jd.getContentPane().add(tagDialog);
-	    		
-	    		JButton tagGenerarInfo = new JButton("Generar informaci\u00F3 per l'ID");
-	    		tagGenerarInfo.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-	    		tagGenerarInfo.setBounds(231, 65, 171, 28);
-	    		jd.getContentPane().add(tagGenerarInfo);
+	    		jd.getContentPane().add(btnExecucio);
 	        } // end-if
-	        
+	        if(dialogId == 3) {
+	        	jd.getContentPane().setLayout(null); // LAYOUT DEL DIALEG PER AL METODE DE CREAR LLIBRE
+	        	jd.setBounds(100, 100, 585, 361); // DIMENSIONS DEL JDIALOG
+	        	
+	        	// MODIFICACIONS DE CARACTERISTIQUES ESPECIFIQUES PER A AQUEST DIALEG
+	    		txtFTitol.setEditable(true);
+	    		txtFAutor.setEditable(true);
+	    		txtFAnyN.setEditable(true);
+	    		txtFAnyP.setEditable(true);
+	    		txtFEditorial.setEditable(true);
+	    		txtFNumPag.setEditable(true);
+	    		JButton btnExecucio = new JButton("Crear llibre");
+	    		btnExecucio.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+	    		btnExecucio.setBounds(220, 63, 124, 28);
+	    		
+		        // VISUALITZACIO DELS COMPONENTS DEL JDIALOG
+	    		jd.getContentPane().add(txtFTitol);
+	    		jd.getContentPane().add(txtFAutor);
+	    		jd.getContentPane().add(tagAutor);
+	    		jd.getContentPane().add(txtFAnyN);
+	    		jd.getContentPane().add(tagAnyN);
+	    		jd.getContentPane().add(txtFAnyP);
+	    		jd.getContentPane().add(txtFEditorial);
+	    		jd.getContentPane().add(tagEditorial);
+	    		jd.getContentPane().add(tagNumPag);
+	    		jd.getContentPane().add(txtFNumPag);
+	    		jd.getContentPane().add(tagDialog);
+	    		jd.getContentPane().add(btnExecucio);
+	        } // end-if
+	        if(dialogId == 4) {
+	        	jd.getContentPane().setLayout(null); // LAYOUT DEL DIALEG PER AL METODE DE MODIFICAR LLIBRE
+	        	jd.setBounds(100, 100, 585, 361); // DIMENSIONS DEL JDIALOG
+	        	
+	        	// MODIFICACIONS DE CARACTERISTIQUES ESPECIFIQUES PER A AQUEST DIALEG
+	        	txtFIdLlibre.setEditable(true);
+	    		txtFTitol.setEditable(true);
+	    		txtFAutor.setEditable(true);
+	    		txtFAnyN.setEditable(true);
+	    		txtFAnyP.setEditable(true);
+	    		txtFEditorial.setEditable(true);
+	    		txtFNumPag.setEditable(true);
+	    		JButton btnExecucio = new JButton("Modificar llibre");
+	    		btnExecucio.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+	    		btnExecucio.setBounds(231, 65, 171, 28);
+	        	
+		        // VISUALITZACIO DELS COMPONENTS DEL JDIALOG
+	    		jd.getContentPane().add(txtFIdLlibre);
+	    		jd.getContentPane().add(tagIdLlibre);
+	    		jd.getContentPane().add(txtFIdLlibre);
+	    		jd.getContentPane().add(tagIdLlibre);
+	    		jd.getContentPane().add(txtFTitol);
+	    		jd.getContentPane().add(txtFAutor);
+	    		jd.getContentPane().add(tagAutor);
+	    		jd.getContentPane().add(txtFAnyN);
+	    		jd.getContentPane().add(tagAnyN);
+	    		jd.getContentPane().add(txtFAnyP);
+	    		jd.getContentPane().add(txtFEditorial);
+	    		jd.getContentPane().add(tagEditorial);
+	    		jd.getContentPane().add(tagNumPag);
+	    		jd.getContentPane().add(txtFNumPag);
+	    		jd.getContentPane().add(tagDialog);
+	    		jd.getContentPane().add(btnExecucio);
+	        } // end-if
+	        if(dialogId == 5) {
+	        	
+	        }
+	        // VISUALITZACIO DEL JDIALOG
 	        jd.setVisible(true);
 	        jd.setLocationRelativeTo(null);
-
 		} catch (Exception ex) {
 			JOptionPane.showMessageDialog(new JFrame(), ex, "ERROR en la consulta!", JOptionPane.ERROR_MESSAGE);
 		} // end-try-catch
@@ -171,7 +247,7 @@ public class Vista extends JFrame {
 	
 	public static void mostrarBiblioteca(Session session) {	
 		session.beginTransaction();
-		String resultatSentencia = "", infoSentencia = "";
+		//String resultatSentencia = "", infoSentencia = "";
 		System.err.println("> SESSIO INICIADA CORRECTAMENT\n");
 		
 		List biblioteca = new ArrayList();
@@ -184,28 +260,37 @@ public class Vista extends JFrame {
 			resultatSentencia += llibre.getIdentificador()+" - "+llibre.getTitol()+"\n";
 		} // end-for
 		
-		mostrarDialeg(2, infoSentencia, resultatSentencia);
+		mostrarDialeg(1);
 		session.getTransaction().commit(); // Commit de la transaccio
 	} // end-mostrarBiblioteca
 	
-	public static void mostrarLlibre(int idLlibre, Session session) {
+	public static void mostrarLlibre(Session session) {
 		session.beginTransaction();
 		System.err.println("> SESSIO INICIADA CORRECTAMENT\n");
 		
+		int idLlibre = Integer.parseInt(txtFIdLlibre.getText());
 		Llibre llibre = (Llibre) session.get(Llibre.class, idLlibre);
 		if(llibre==null) {
-			System.err.println("ERROR! No s'ha trobat cap llibre amb l'ID: "+idLlibre);
+			//System.err.println("ERROR! No s'ha trobat cap llibre amb l'ID: "+idLlibre);
+			JOptionPane.showMessageDialog(new JFrame(), idLlibre, "ERROR! No s'ha trobat cap llibre", JOptionPane.ERROR_MESSAGE);
 		} else {
-			System.out.println("----- DADES DEL LLIBRE -----"
-					+ "\nTitol: "+llibre.getTitol()+
-					"\nAutor: "+llibre.getAutor()+
-					"\nAny Naixement: "+llibre.getAnyNaixement()+
-					"\nAny Publicacio: "+llibre.getAnyPublicacio()+
-					"\nEditorial: "+llibre.getEditorial()+
-					"\nNum pagines: "+llibre.getNumPagines()
-			);
+//			System.out.println("----- DADES DEL LLIBRE -----"
+//					+ "\nTitol: "+llibre.getTitol()+
+//					"\nAutor: "+llibre.getAutor()+
+//					"\nAny Naixement: "+llibre.getAnyNaixement()+
+//					"\nAny Publicacio: "+llibre.getAnyPublicacio()+
+//					"\nEditorial: "+llibre.getEditorial()+
+//					"\nNum pagines: "+llibre.getNumPagines()
+//			);
+			txtFTitol.setText(llibre.getTitol());
+			txtFAutor.setText(llibre.getAutor());
+			txtFAnyN.setText(llibre.getAnyNaixement());
+			txtFAnyP.setText(llibre.getAnyPublicacio());
+			txtFEditorial.setText(llibre.getEditorial());
+			txtFNumPag.setText(llibre.getNumPagines());
+			
 		} // end-if-else
-		
+		mostrarDialeg(2);
 		session.getTransaction().commit(); // Commit de la transaccio
 	} // end-mostrarLlibre
 	
@@ -360,7 +445,7 @@ public class Vista extends JFrame {
 		btnMostrarLlibre.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// ACCIONS QUE S'EXECUTARAN AL PRESSSIONAR SOBRE AQUEST BOTO
-				mostrarLlibre(1,session);
+				mostrarLlibre(session);
 			}
 		});
 		btnMostrarLlibre.setFont(new Font("Segoe UI", Font.PLAIN, 11));
