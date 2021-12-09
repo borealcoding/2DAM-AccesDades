@@ -23,6 +23,7 @@ public class Principal {
 		session.beginTransaction();
 		System.err.println("> SESSIO INICIADA CORRECTAMENT\n");
 		
+		@SuppressWarnings("rawtypes")
 		List biblioteca = new ArrayList();
 		biblioteca = session.createQuery("FROM Llibre").list();
 		System.out.println("----- LLISTA DE LLIBRES -----");

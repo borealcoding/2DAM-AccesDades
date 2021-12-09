@@ -1,39 +1,23 @@
 package es.florida.accesdades.ae5;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.Font;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
-import javax.swing.JTextField;
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
-import java.awt.event.ActionEvent;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.JScrollBar;
 
+@SuppressWarnings("serial")
 public class Pruebas extends JFrame {
 
 	private JPanel contentPane;
-	private JTextField txtFTitol;
-	private JTextField txtFAutor;
-	private JTextField txtFAnyN;
-	private JTextField txtFAnyP;
-	private JTextField txtFEditorial;
-	private JTextField txtFNumPag;
 	public JTextArea textArea;
 
 	/**

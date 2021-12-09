@@ -1,8 +1,16 @@
 package es.florida.accesdades.ae5;
 
-import java.awt.*;
+import java.io.Serializable;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+
+import java.awt.*;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -10,13 +18,7 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 
-import java.awt.event.ActionListener;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-import java.awt.event.ActionEvent;
-
+@SuppressWarnings("serial")
 public class Vista extends JFrame {
 	// DECLARACIONS GENERALS
 	private JButton btnMostrarBiblioteca, btnMostrarLlibre, btnAfegir, btnModificar, btnEsborrar;
@@ -28,7 +30,6 @@ public class Vista extends JFrame {
 		visualitzar();
 	} // end-constructor
 	
-	@SuppressWarnings("null")
 	public static void mostrarDialeg(int dialogId) {
 		try {
         	JDialog jd = new JDialog(new JFrame());
@@ -118,6 +119,7 @@ public class Vista extends JFrame {
 				
 				System.err.println("> SESSIO INICIADA CORRECTAMENT\n");
 				String resultatSentencia = "";
+				@SuppressWarnings("rawtypes")
 				List biblioteca = new ArrayList();
 				biblioteca = session.createQuery("FROM Llibre").list();
 				for (Object obj : biblioteca) {
@@ -222,7 +224,6 @@ public class Vista extends JFrame {
 	    			public void actionPerformed(ActionEvent e) {
     					session.beginTransaction();
     					System.err.println("> SESSIO INICIADA CORRECTAMENT\n");
-	    				Scanner sc = new Scanner(System.in);
 	    				String decisio = "";
 
     					String strTitol = txtFTitol.getText();
@@ -240,7 +241,8 @@ public class Vista extends JFrame {
     					} else {
     						strAnyNaixement = strAnyNaixement.equals("") ? "N.C" : strAnyNaixement; // nomes el any de naixement pot ser null, aleshores li assignarem un N.C (No consta) si resulta que no li hem passat cap valor
     						Llibre llibreNou = new Llibre(strTitol,strAutor,strAnyNaixement,strAnyPublicacio,strEditorial,strNumPagines);
-        					Serializable id = session.save(llibreNou);
+        					@SuppressWarnings("unused")
+							Serializable id = session.save(llibreNou);
         					session.getTransaction().commit(); // Commit de la transaccio
         					
         					JOptionPane.showMessageDialog(new JFrame(), "Llibre afegit correctament amb l'ID "+llibreNou.getIdentificador(), "Avis", JOptionPane.INFORMATION_MESSAGE);	
@@ -414,28 +416,6 @@ public class Vista extends JFrame {
 		} // end-try-catch
 	} // end-mostrarDialeg
 	
-	public static void esborrarLlibre(int idLlibre) {
-		// Carrega la configuracio i crea una session factory
-		System.err.println("\n> CONFIGURANT CONEXIO D'HIBERNATE");
-		Configuration configuration = new Configuration().configure("hibernate.cfg.xml");
-		configuration.addClass(Llibre.class);
-		ServiceRegistry registry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
-		SessionFactory sessionFactory = configuration.buildSessionFactory(registry);
-		
-		System.err.println("> INICIANT SESSIO ...\n");
-		// Obri una nova sessio de la session factory
-		Session session = sessionFactory.openSession();
-		session.beginTransaction();
-		System.err.println("> SESSIO INICIADA CORRECTAMENT\n");
-		
-		Llibre llibreCremat = new Llibre();
-		llibreCremat.setIdentificador(idLlibre);
-		session.delete(llibreCremat);
-
-		session.getTransaction().commit(); // Commit de la transaccio
-		session.close(); // Tanca la sessio
-	} // end-esborrarLlibre
-	
 	public void visualitzar() {
 		setTitle("Hibernate - AE5 (Acc\u00E8s a Dades)");
 		setFont(new Font("Segoe UI", Font.PLAIN, 12));
@@ -465,7 +445,6 @@ public class Vista extends JFrame {
 		btnMostrarBiblioteca.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {				
 				mostrarDialeg(1);
-				
 			}
 		});
 		btnMostrarBiblioteca.setFont(new Font("Segoe UI", Font.PLAIN, 11));
@@ -480,8 +459,7 @@ public class Vista extends JFrame {
 		btnMostrarLlibre.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// ACCIONS QUE S'EXECUTARAN AL PRESSSIONAR SOBRE AQUEST BOTO
-				mostrarDialeg(2);
-				
+				mostrarDialeg(2);	
 			}
 		});
 		btnMostrarLlibre.setFont(new Font("Segoe UI", Font.PLAIN, 11));
@@ -496,7 +474,6 @@ public class Vista extends JFrame {
 		btnAfegir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// ACCIONS QUE S'EXECUTARAN AL PRESSSIONAR SOBRE AQUEST BOTO
-				//afegirNouLlibre(session);
 				mostrarDialeg(3);
 			}
 		});
@@ -512,7 +489,6 @@ public class Vista extends JFrame {
 		btnModificar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// ACCIONS QUE S'EXECUTARAN AL PRESSSIONAR SOBRE AQUEST BOTO
-				//actualitzarLlibre(session);
 				mostrarDialeg(4);
 			}
 		});
@@ -528,7 +504,6 @@ public class Vista extends JFrame {
 		btnEsborrar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// ACCIONS QUE S'EXECUTARAN AL PRESSSIONAR SOBRE AQUEST BOTO
-				//esborrarLlibre(18);
 				mostrarDialeg(5);
 			}
 		});
