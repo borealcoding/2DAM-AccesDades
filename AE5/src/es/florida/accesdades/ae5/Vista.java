@@ -44,8 +44,8 @@ public class Vista extends JFrame {
     		JLabel tagDialog = new JLabel("Titol descriptiu");
     		tagDialog.setHorizontalAlignment(SwingConstants.CENTER);
     		tagDialog.setForeground(Color.WHITE);
-    		tagDialog.setFont(new Font("Segoe UI Light", Font.PLAIN, 16));
-    		tagDialog.setBounds(172, 11, 215, 28);
+    		tagDialog.setFont(new Font("Segoe UI Light", Font.PLAIN, 21));
+    		tagDialog.setBounds(10, 11, 549, 28);
 	       
 			// CARACTERISTIQUES COMUNES DELS DIALEGS 2, 3 I 4
 
@@ -126,7 +126,7 @@ public class Vista extends JFrame {
 	        	jd.getContentPane().setLayout(new FlowLayout()); // LAYOUT DEL DIALEG QUE MOSTRARA TOTS ELS TITOLS DE LA BIBLIOTECA
 		        jd.setBounds(100, 100, 668, 445); // DIMENSIONS DEL JDIALOG
 		        
-		        tagDialog.setText("----- LLISTA DE LLIBRES -----");
+		        tagDialog.setText("LLISTA DE LLIBRES");
 		        
 		        JTextArea txtA;
 		        txtA = new JTextArea();
@@ -156,7 +156,7 @@ public class Vista extends JFrame {
 	        	jd.setBounds(100, 100, 585, 361); // DIMENSIONS DEL JDIALOG
 	        	
 	        	// MODIFICACIONS DE CARACTERISTIQUES ESPECIFIQUES PER A AQUEST DIALEG
-	        	tagDialog.setText("----- DADES DEL LLIBRE -----");
+	        	tagDialog.setText("DADES DEL LLIBRE");
 	        	txtFIdLlibre.setEditable(true);
 	    		txtFTitol.setEditable(false);
 	    		txtFAutor.setEditable(false);
@@ -175,7 +175,7 @@ public class Vista extends JFrame {
 		    				Llibre llibre = (Llibre) session.get(Llibre.class, id);
 		    				
 		    				if(llibre==null) {
-		    					JOptionPane.showMessageDialog(new JFrame(), id, "ERROR! No s'ha trobat cap llibre", JOptionPane.ERROR_MESSAGE);
+		    					JOptionPane.showMessageDialog(new JFrame(), "El ID "+id+" no es valid! :(", "ERROR!", JOptionPane.ERROR_MESSAGE);
 		    				} else {
 		    					txtFTitol.setText(llibre.getTitol());
 		    					txtFAutor.setText(llibre.getAutor());
@@ -235,54 +235,43 @@ public class Vista extends JFrame {
 	    			public void actionPerformed(ActionEvent e) {
 	    				Scanner sc = new Scanner(System.in);
 	    				String decisio = "";
-	    				//System.out.println("Benvingut al sistema de creacio de llibres!"
-	    						//+ "\nOmpli els seguents atributs per teclat...");
-	    				do {
-	    					session.beginTransaction();
-	    					System.err.println("> SESSIO INICIADA CORRECTAMENT\n");
-	    					
-	    					//System.out.print("Titol: ");
-	    					//String strTitol = sc.nextLine();
-	    					String strTitol = txtFTitol.getText();
-	    					
-	    					//System.out.print("Autor: ");
-	    					//String strAutor = sc.nextLine();
-	    					String strAutor = txtFAutor.getText();
-	    					
-	    					//System.out.print("Any Naixement: ");
-	    					//String strAnyNaixement = sc.nextLine();
-	    					String strAnyNaixement = txtFAnyN.getText();
-	    					
-	    					//System.out.print("Any Publicacio: ");
-	    					//String strAnyPublicacio = sc.nextLine();
-	    					String strAnyPublicacio = txtFAnyP.getText();
-	    					
-	    					//System.out.print("Editorial: ");
-	    					//String strEditorial = sc.nextLine();
-	    					String strEditorial = txtFEditorial.getText();
+    					session.beginTransaction();
+    					System.err.println("> SESSIO INICIADA CORRECTAMENT\n");
 
-	    					//System.out.print("Num. Pagines: ");
-	    					//String strNumPagines = sc.nextLine();	
-	    					String strNumPagines = txtFNumPag.getText();
-	    					
-	    					Llibre llibreNou = new Llibre(strTitol,strAutor,strAnyNaixement,strAnyPublicacio,strEditorial,strNumPagines);
-	    					
-	    					/*System.out.println("----- DADES DEL NOU LLIBRE -----"
-	    							+ "\nTitol: "+llibreNou.getTitol()+
-	    							"\nAutor: "+llibreNou.getAutor()+
-	    							"\nAny Naixement: "+llibreNou.getAnyNaixement()+
-	    							"\nAny Publicacio: "+llibreNou.getAnyPublicacio()+
-	    							"\nEditorial: "+llibreNou.getEditorial()+
-	    							"\nNum pagines: "+llibreNou.getNumPagines()
-	    					);*/
-	    					
-	    					Serializable id = session.save(llibreNou);
-	    					session.getTransaction().commit(); // Commit de la transaccio
-	    					
-	    					decisio = JOptionPane.showInputDialog("Vols afegir altre llibre? (s/n)");
-	    					
-	    				} while(decisio.equals("s"));
-	    			}
+    					String strTitol = txtFTitol.getText();
+    					String strAutor = txtFAutor.getText();
+    					String strAnyNaixement = txtFAnyN.getText();
+    					String strAnyPublicacio = txtFAnyP.getText();
+    					String strEditorial = txtFEditorial.getText();
+    					String strNumPagines = txtFNumPag.getText();
+    					
+    					if(strTitol.equals("") || strAutor.equals("") || strAnyPublicacio.equals("") || strEditorial.equals("") || strNumPagines.equals("")) {
+    						// per a evitar camps buits (que de per si son NOT NULL), comprobarem si ens hem deixat algun camp sense omplir
+    						JOptionPane.showMessageDialog(new JFrame(), "Pareix que t'has oblidat d'omplir un camp de text :(", "ERROR!", JOptionPane.ERROR_MESSAGE);
+    						session.close();
+	    			    	configuracio();
+    					} else {
+    						strAnyNaixement = strAnyNaixement.equals("") ? "N.C" : strAnyNaixement; // nomes el any de naixement pot ser null, aleshores li assignarem un N.C (No consta) si resulta que no li hem passat cap valor
+    						Llibre llibreNou = new Llibre(strTitol,strAutor,strAnyNaixement,strAnyPublicacio,strEditorial,strNumPagines);
+        					Serializable id = session.save(llibreNou);
+        					session.getTransaction().commit(); // Commit de la transaccio
+        					
+        					JOptionPane.showMessageDialog(new JFrame(), "Llibre afegit correctament amb l'ID "+llibreNou.getIdentificador(), "Avis", JOptionPane.INFORMATION_MESSAGE);	
+        					decisio = JOptionPane.showInputDialog("Vols afegir altre llibre? (s/n)");
+        					if(decisio.equals("s")) {
+        						// ressetejem les dades si volem afegir altre llibre, per a poder afegir noves dades facilment i evitar accidents
+        						strTitol = ""; txtFTitol.setText("");
+        						strAutor = ""; txtFAutor.setText("");
+        						strAnyNaixement = ""; txtFAnyN.setText("");
+        						strAnyPublicacio = ""; txtFAnyP.setText("");
+        						strEditorial = ""; txtFEditorial.setText("");
+        						strNumPagines = ""; txtFNumPag.setText("");
+        					} else {
+        						// sino desitjem afegir mes llibres, farem que es tanque el jdialog.
+        						jd.dispose();
+        					} // end-if 2
+    					} // end-if 1
+	    			} // end-actionPerformed
 	    		});
 	    		btnExecucio.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 	    		btnExecucio.setBounds(220, 63, 124, 28);
@@ -353,53 +342,6 @@ public class Vista extends JFrame {
 			JOptionPane.showMessageDialog(new JFrame(), ex, "ERROR en la consulta!", JOptionPane.ERROR_MESSAGE);
 		} // end-try-catch
 	} // end-mostrarDialeg
-	
-//	public static void afegirNouLlibre(Session session) {
-//		Scanner sc = new Scanner(System.in);
-//		String decisio = "";
-//		System.out.println("Benvingut al sistema de creacio de llibres!"
-//				+ "\nOmpli els seguents atributs per teclat...");
-//		do {
-//			session.beginTransaction();
-//			System.err.println("> SESSIO INICIADA CORRECTAMENT\n");
-//			
-//			System.out.print("Titol: ");
-//			String strTitol = sc.nextLine();
-//			
-//			System.out.print("Autor: ");
-//			String strAutor = sc.nextLine();
-//			
-//			System.out.print("Any Naixement: ");
-//			String strAnyNaixement = sc.nextLine();
-//			
-//			System.out.print("Any Publicacio: ");
-//			String strAnyPublicacio = sc.nextLine();
-//			
-//			System.out.print("Editorial: ");
-//			String strEditorial = sc.nextLine();
-//			
-//			System.out.print("Num. Pagines: ");
-//			String strNumPagines = sc.nextLine();	
-//		
-//			Llibre llibreNou = new Llibre(strTitol,strAutor,strAnyNaixement,strAnyPublicacio,strEditorial,strNumPagines);
-//			
-//			System.out.println("----- DADES DEL NOU LLIBRE -----"
-//					+ "\nTitol: "+llibreNou.getTitol()+
-//					"\nAutor: "+llibreNou.getAutor()+
-//					"\nAny Naixement: "+llibreNou.getAnyNaixement()+
-//					"\nAny Publicacio: "+llibreNou.getAnyPublicacio()+
-//					"\nEditorial: "+llibreNou.getEditorial()+
-//					"\nNum pagines: "+llibreNou.getNumPagines()
-//			);
-//			
-//			Serializable id = session.save(llibreNou);
-//			session.getTransaction().commit(); // Commit de la transaccio
-//			
-//			System.out.print("Vols afegir altre llibre? (s/n): ");
-//			decisio = sc.nextLine();
-//			System.out.println();
-//		} while(decisio.equals("s"));
-//	} // end-afegirNouLlibre
 	
 	public static void actualitzarLlibre(Session session) {
 		Scanner sc = new Scanner(System.in);
@@ -537,7 +479,8 @@ public class Vista extends JFrame {
 		btnModificar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// ACCIONS QUE S'EXECUTARAN AL PRESSSIONAR SOBRE AQUEST BOTO
-				actualitzarLlibre(session);
+				//actualitzarLlibre(session);
+				mostrarDialeg(4);
 			}
 		});
 		btnModificar.setFont(new Font("Segoe UI", Font.PLAIN, 11));
@@ -552,7 +495,8 @@ public class Vista extends JFrame {
 		btnEsborrar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// ACCIONS QUE S'EXECUTARAN AL PRESSSIONAR SOBRE AQUEST BOTO
-				esborrarLlibre(18);
+				//esborrarLlibre(18);
+				mostrarDialeg(5);
 			}
 		});
 		btnEsborrar.setFont(new Font("Segoe UI", Font.PLAIN, 11));
@@ -573,7 +517,7 @@ public class Vista extends JFrame {
 		
 		System.err.println("> INICIANT SESSIO ...\n");
 		session = sessionFactory.openSession(); // Obri una nova sessio de la session factory
-	}
+	} // end-configuracio
 
 	/**
 	 * Launch the application.
@@ -592,5 +536,5 @@ public class Vista extends JFrame {
 		Vista frame = new Vista();
 		frame.setVisible(true);
 		frame.setLocationRelativeTo(null);
-	}
-}
+	} // end-main
+} // end-class

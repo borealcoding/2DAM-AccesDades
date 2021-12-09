@@ -131,7 +131,7 @@ public class Pruebas extends JFrame {
 		tagDialog.setHorizontalAlignment(SwingConstants.CENTER);
 		tagDialog.setForeground(Color.WHITE);
 		tagDialog.setFont(new Font("Segoe UI Light", Font.PLAIN, 21));
-		tagDialog.setBounds(150, 11, 268, 28);
+		tagDialog.setBounds(10, 11, 549, 28);
 		contentPane.add(tagDialog);
 		
 		JButton tagGenerarInfo = new JButton("Crear llibre");
