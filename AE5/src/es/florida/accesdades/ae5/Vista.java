@@ -23,23 +23,16 @@ public class Vista extends JFrame {
 	private JPanel contentPane;
 	// DECLARACIONS STATIC (AQUESTES VARIABLES S'USEN EN DIVERSOS METODES)
 	static Session session;
-	//static String resultatSentencia = "", infoSentencia = "";
-	//static JLabel tagIdLlibre;
-	//static JTextField txtFIdLlibre, txtFTitol, txtFAutor, txtFAnyN, txtFAnyP, txtFEditorial, txtFNumPag;
 	
 	public Vista() {
 		visualitzar();
-	}
+	} // end-constructor
 	
 	@SuppressWarnings("null")
 	public static void mostrarDialeg(int dialogId) {
 		try {
         	JDialog jd = new JDialog(new JFrame());
 			jd.getContentPane().setBackground(new Color(3, 131, 135));
-			
-//			JLabel tagTitolJd = new JLabel("");
-//	        tagTitolJd.setFont(new Font("Segoe UI Light", Font.PLAIN, 16));
-//	        tagTitolJd.setForeground(Color.WHITE);
 	        
     		JLabel tagDialog = new JLabel("Titol descriptiu");
     		tagDialog.setHorizontalAlignment(SwingConstants.CENTER);
@@ -119,21 +112,9 @@ public class Vista extends JFrame {
     		txtFNumPag.setBounds(449, 239, 72, 28);
     		txtFNumPag.setColumns(10);
     		
-	        
+    		// DIALEG DE MOSTRAR TOTS ELS TITOLS
 	        if(dialogId == 1) {
 	        	session.beginTransaction();
-	        	// CARACTERISTIQUES DEL DIALEG 1
-	        	jd.getContentPane().setLayout(new FlowLayout()); // LAYOUT DEL DIALEG QUE MOSTRARA TOTS ELS TITOLS DE LA BIBLIOTECA
-		        jd.setBounds(100, 100, 668, 445); // DIMENSIONS DEL JDIALOG
-		        
-		        tagDialog.setText("LLISTA DE LLIBRES");
-		        
-		        JTextArea txtA;
-		        txtA = new JTextArea();
-				txtA.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-				txtA.setLineWrap(true);
-				txtA.setEditable(false);
-				txtA.setBounds(10,47,632,500);
 				
 				System.err.println("> SESSIO INICIADA CORRECTAMENT\n");
 				String resultatSentencia = "";
@@ -143,14 +124,15 @@ public class Vista extends JFrame {
 					Llibre llibre = (Llibre) obj;
 					resultatSentencia += llibre.getIdentificador()+" - "+llibre.getTitol()+"\n";
 				} // end-for
-			
-				txtA.setText(resultatSentencia);
+				Pruebas visualitzar2 = new Pruebas();
+				visualitzar2.getTextArea().setText(resultatSentencia);
+				visualitzar2.setVisible(true);
+				
+				//txtA.setText(resultatSentencia);
 				session.getTransaction().commit(); // Commit de la transaccio
-	
-		        // VISUALITZACIO DELS COMPONENTS DEL JDIALOG
-		        jd.getContentPane().add(tagDialog);
-		        jd.getContentPane().add(txtA);
 	        } // end-if
+	        
+	        // 
 	        if(dialogId == 2) {
 	        	jd.getContentPane().setLayout(null); // LAYOUT DEL DIALEG PER AL METODE DE CONSULTAR LLIBRE
 	        	jd.setBounds(100, 100, 585, 361); // DIMENSIONS DEL JDIALOG
@@ -168,9 +150,9 @@ public class Vista extends JFrame {
 	    		JButton btnExecucio = new JButton("Generar informaci\u00F3 per l'ID");
 	    		btnExecucio.addActionListener(new ActionListener() {
 	    			public void actionPerformed(ActionEvent e) {
-	    				session.beginTransaction();
-	    				System.err.println("> SESSIO INICIADA CORRECTAMENT\n");
 	    				try {
+		    				session.beginTransaction();
+		    				System.err.println("> SESSIO INICIADA CORRECTAMENT\n");
 	    					int id = Integer.parseInt(txtFIdLlibre.getText());
 		    				Llibre llibre = (Llibre) session.get(Llibre.class, id);
 		    				
@@ -217,6 +199,11 @@ public class Vista extends JFrame {
 	    		jd.getContentPane().add(tagNumPag);
 	    		jd.getContentPane().add(txtFNumPag);
 	    		jd.getContentPane().add(btnExecucio);
+	    		
+	    		// VISUALITZACIO DEL JDIALOG
+		        jd.setVisible(true);
+		        jd.setLocationRelativeTo(null);
+		       
 	        } // end-if
 	        if(dialogId == 3) {
 	        	jd.getContentPane().setLayout(null); // LAYOUT DEL DIALEG PER AL METODE DE CREAR LLIBRE
@@ -233,10 +220,10 @@ public class Vista extends JFrame {
 	    		JButton btnExecucio = new JButton("Crear llibre");
 	    		btnExecucio.addActionListener(new ActionListener() {
 	    			public void actionPerformed(ActionEvent e) {
-	    				Scanner sc = new Scanner(System.in);
-	    				String decisio = "";
     					session.beginTransaction();
     					System.err.println("> SESSIO INICIADA CORRECTAMENT\n");
+	    				Scanner sc = new Scanner(System.in);
+	    				String decisio = "";
 
     					String strTitol = txtFTitol.getText();
     					String strAutor = txtFAutor.getText();
@@ -257,7 +244,8 @@ public class Vista extends JFrame {
         					session.getTransaction().commit(); // Commit de la transaccio
         					
         					JOptionPane.showMessageDialog(new JFrame(), "Llibre afegit correctament amb l'ID "+llibreNou.getIdentificador(), "Avis", JOptionPane.INFORMATION_MESSAGE);	
-        					decisio = JOptionPane.showInputDialog("Vols afegir altre llibre? (s/n)");
+        					decisio = JOptionPane.showInputDialog(null, "Vols afegir altre llibre? (s/n)");
+        				
         					if(decisio.equals("s")) {
         						// ressetejem les dades si volem afegir altre llibre, per a poder afegir noves dades facilment i evitar accidents
         						strTitol = ""; txtFTitol.setText("");
@@ -291,12 +279,17 @@ public class Vista extends JFrame {
 	    		jd.getContentPane().add(tagNumPag);
 	    		jd.getContentPane().add(txtFNumPag);
 	    		jd.getContentPane().add(btnExecucio);
+	    		
+	    		// VISUALITZACIO DEL JDIALOG
+		        jd.setVisible(true);
+		        jd.setLocationRelativeTo(null);
 	        } // end-if
 	        if(dialogId == 4) {
 	        	jd.getContentPane().setLayout(null); // LAYOUT DEL DIALEG PER AL METODE DE MODIFICAR LLIBRE
 	        	jd.setBounds(100, 100, 585, 361); // DIMENSIONS DEL JDIALOG
 	        	
 	        	// MODIFICACIONS DE CARACTERISTIQUES ESPECIFIQUES PER A AQUEST DIALEG
+	        	tagDialog.setText("ACTUALITZACIO DE DADES");
 	        	txtFIdLlibre.setEditable(true);
 	    		txtFTitol.setEditable(true);
 	    		txtFAutor.setEditable(true);
@@ -308,8 +301,54 @@ public class Vista extends JFrame {
 	    		JButton btnExecucio = new JButton("Modificar llibre");
 	    		btnExecucio.addActionListener(new ActionListener() {
 	    			public void actionPerformed(ActionEvent e) {
-	    				
-	    			}
+	    				try {
+	    					session.beginTransaction();
+	    					String decisio = "";
+	    					int id = Integer.parseInt(txtFIdLlibre.getText());
+		    				Llibre llibreModificat = (Llibre) session.get(Llibre.class, id);
+		    				
+		    				if(llibreModificat==null) {
+		    					JOptionPane.showMessageDialog(new JFrame(), "El ID "+id+" no es valid! :(", "ERROR!", JOptionPane.ERROR_MESSAGE);
+		    				} else {
+		    					
+		    					llibreModificat.setTitol(txtFTitol.getText());
+		    					llibreModificat.setAutor(txtFAutor.getText());
+		    					llibreModificat.setAnyNaixement(txtFAnyN.getText());
+		    					llibreModificat.setAnyPublicacio(txtFAnyP.getText());
+		    					llibreModificat.setEditorial(txtFEditorial.getText());
+		    					llibreModificat.setNumPagines(txtFNumPag.getText());
+
+		    				} // end-if-else
+		    				session.update(llibreModificat); // Sentencia update
+		    				session.getTransaction().commit(); // Commit de la transaccio
+		    				
+		    				JOptionPane.showMessageDialog(new JFrame(), "Llibre amb ID "+llibreModificat.getIdentificador()+" modificat correctament", "Avis", JOptionPane.INFORMATION_MESSAGE);
+		    				
+		    				decisio = JOptionPane.showInputDialog(null, "Vols modificar altre llibre? (s/n)");
+	        				
+        					if(decisio.equals("s")) {
+        						// ressetejem les dades si volem afegir altre llibre, per a poder afegir noves dades facilment i evitar accidents
+        						txtFIdLlibre.setText("");
+        						txtFTitol.setText("");
+        						txtFAutor.setText("");
+        						txtFAnyN.setText("");
+        						txtFAnyP.setText("");
+        						txtFEditorial.setText("");
+        						txtFNumPag.setText("");
+        					} else {
+        						// sino desitjem afegir mes llibres, farem que es tanque el jdialog.
+        						jd.dispose();
+        					} // end-if 2
+	    				} catch(NumberFormatException nfe){
+	    					JOptionPane.showMessageDialog(new JFrame(), nfe+"\nTENS QUE INDICAR UN ID! :(", "ERROR!", JOptionPane.ERROR_MESSAGE);
+	    			    	session.close();
+	    			    	configuracio();
+	    				} catch (IllegalStateException ise) {
+	    					JOptionPane.showMessageDialog(new JFrame(), ise+"\nTENS QUE INDICAR UN ID! :(", "ERROR!", JOptionPane.ERROR_MESSAGE);
+	    					session.close();
+	    					configuracio();
+	    			    } // end try-catch
+	    			} // end-actionPerformed
 	    		});
 	    		btnExecucio.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 	    		btnExecucio.setBounds(231, 65, 171, 28);
@@ -321,6 +360,7 @@ public class Vista extends JFrame {
 	    		jd.getContentPane().add(txtFIdLlibre);
 	    		jd.getContentPane().add(tagIdLlibre);
 	    		jd.getContentPane().add(txtFTitol);
+	    		jd.getContentPane().add(tagTitol);
 	    		jd.getContentPane().add(txtFAutor);
 	    		jd.getContentPane().add(tagAutor);
 	    		jd.getContentPane().add(txtFAnyN);
@@ -331,55 +371,48 @@ public class Vista extends JFrame {
 	    		jd.getContentPane().add(tagNumPag);
 	    		jd.getContentPane().add(txtFNumPag);
 	    		jd.getContentPane().add(btnExecucio);
-	        } // end-if
+	    		
+	    		// VISUALITZACIO DEL JDIALOG
+		        jd.setVisible(true);
+		        jd.setLocationRelativeTo(null);
+	        } // end-dialog4
+	        
 	        if(dialogId == 5) {
-	        	
-	        }
-	        // VISUALITZACIO DEL JDIALOG
-	        jd.setVisible(true);
-	        jd.setLocationRelativeTo(null);
+	        	try {
+	        		session.beginTransaction();
+		    		System.err.println("> SESSIO INICIADA CORRECTAMENT\n");
+		    		
+		    		int idLlibre = Integer.parseInt(JOptionPane.showInputDialog(null, "Indica l'ID del llibre que desitjes esborrar"));
+		    		Llibre llibreCremat = (Llibre) session.get(Llibre.class, idLlibre);
+		    		if(llibreCremat == null) {
+		    			JOptionPane.showMessageDialog(new JFrame(), "El ID "+idLlibre+" no es valid! :(", "ERROR!", JOptionPane.ERROR_MESSAGE);
+		    		} else {
+		    			String decisio = JOptionPane.showInputDialog(null, "Estas segur de que vols esborrar el llibre amb l'ID "+idLlibre+"?");
+		    			if(decisio.equals("s")) {
+			    			llibreCremat.setIdentificador(idLlibre);
+			    			session.delete(llibreCremat);
+			    			session.getTransaction().commit(); // Commit de la transaccio
+			    			session.close();
+			    			JOptionPane.showMessageDialog(new JFrame(),"Llibre amb l'ID "+idLlibre+" esborrar correctament!", "Avis", JOptionPane.INFORMATION_MESSAGE);
+			    		} else {
+			    			session.close();
+			    			configuracio();
+			    		} // end-if 2
+		    		} // end-if 1
+	        	} catch(NumberFormatException nfe) {
+					JOptionPane.showMessageDialog(new JFrame(), nfe, "ERROR!", JOptionPane.ERROR_MESSAGE);
+			    	session.close();
+			    	configuracio();
+				} catch (IllegalStateException ise) {
+					JOptionPane.showMessageDialog(new JFrame(), ise, "ERROR!", JOptionPane.ERROR_MESSAGE);
+					session.close();
+					configuracio();
+			    } // end try-catch
+	        } // end-dialog5
 		} catch (Exception ex) {
 			JOptionPane.showMessageDialog(new JFrame(), ex, "ERROR en la consulta!", JOptionPane.ERROR_MESSAGE);
 		} // end-try-catch
 	} // end-mostrarDialeg
-	
-	public static void actualitzarLlibre(Session session) {
-		Scanner sc = new Scanner(System.in);
-		String decisio = "";
-		do {
-			session.beginTransaction();
-			System.err.println("> SESSIO INICIADA CORRECTAMENT\n");
-			
-			System.out.print("Indica l'ID del llibre que vols actualitzar: ");
-			Llibre llibreActualitzat = (Llibre) session.load(Llibre.class, Integer.parseInt(sc.nextLine()));
-			
-			System.out.print("Titol: ");
-			llibreActualitzat.setTitol(sc.nextLine());
-			
-			System.out.print("Autor: ");
-			llibreActualitzat.setAutor(sc.nextLine());
-			
-			System.out.print("Any Naixement: ");
-			llibreActualitzat.setAnyNaixement(sc.nextLine());
-			
-			System.out.print("Any Publicacio: ");
-			llibreActualitzat.setAnyPublicacio(sc.nextLine());
-			
-			System.out.print("Editorial: ");
-			llibreActualitzat.setEditorial(sc.nextLine());
-			
-			System.out.print("Num. Pagines: ");
-			llibreActualitzat.setNumPagines(sc.nextLine());
-			
-			session.update(llibreActualitzat); // Sentencia update
-			session.getTransaction().commit(); // Commit de la transaccio
-			
-			System.out.print("Vols actualitzar altre llibre? (s/n): ");
-			decisio = sc.nextLine();
-			System.out.println();
-
-		} while(decisio.equals("s"));
-	} // end-actualitzarLlibre
 	
 	public static void esborrarLlibre(int idLlibre) {
 		// Carrega la configuracio i crea una session factory
