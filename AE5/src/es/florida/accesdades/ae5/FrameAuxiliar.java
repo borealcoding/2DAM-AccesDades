@@ -15,20 +15,17 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 @SuppressWarnings("serial")
-public class Pruebas extends JFrame {
-
+public class FrameAuxiliar extends JFrame {
+	// DECLARACIONS GENERALS DEL FRAME
 	private JPanel contentPane;
 	public JTextArea textArea;
 
-	/**
-	 * Create the frame.
-	 */
-	public Pruebas() {
-		visualitzar2();
+	public FrameAuxiliar() {
+		visualitzar();
 		
-	}
+	} // end-constructor
 	
-	public void visualitzar2() {
+	public void visualitzar() {
 		setTitle("Hibernate - AE5 (Acc\u00E8s a Dades)");
 		setFont(new Font("Segoe UI", Font.PLAIN, 12));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -37,7 +34,6 @@ public class Pruebas extends JFrame {
 		contentPane.setBackground(new Color(3, 131, 135));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
-	
 
         JLabel totsTitols = new JLabel("Tots el titols de la biblioteca");
         totsTitols.setBounds(24, 30, 634, 36);
@@ -67,9 +63,9 @@ public class Pruebas extends JFrame {
         scrollPane.setVerticalScrollBarPolicy( JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPane.setVisible(true);
         contentPane.add(scrollPane);
-	}
+	} // end-visualitzar
 	
 	public JTextArea getTextArea() {
 		return textArea;
-	}
-}
+	} // end-getTextArea
+} // end-class
