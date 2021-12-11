@@ -1,5 +1,10 @@
 package es.florida.accesdades.ae5;
-
+/*
+ * @author Eduardo Rua Chamorro | 2. DAM - Florida Universitaria
+ * @version AE5.0 - Acces a Dades
+ * @description Aquest programa implementa la ampliacio indicada a l'activitat. Tracta de crear una interficie grafica que implemente les funcionalitats indicades al PDF.
+ * */
+// IMPORTACIO DE LLIBRERIES
 import java.io.Serializable;
 
 import java.util.ArrayList;
@@ -30,6 +35,12 @@ public class Principal extends JFrame {
 		visualitzar();
 	} // end-constructor
 	
+	/*
+	 * METODE mostrarDialeg
+	 * TE COM A FUNCIO LA DE MOSTRAR UN DIALEG PER CADA BOTO QUE POLSEM
+	 * CADA DIALEG TINDRA UNES CARACTERISTIQUES DISTINTES, I S'HI ADAPTARA A LA PROBLEMATICA DE LES FUNCIONALITATS IMPLEMENTADES EN EL SEU CAS.
+	 * 
+	 * */
 	public static void mostrarDialeg(int dialogId) {
 		try {
 			// PROPIETATS GENERALS DEL JDIALOG
@@ -172,7 +183,6 @@ public class Principal extends JFrame {
 		    					txtFAnyP.setText(llibre.getAnyPublicacio());
 		    					txtFEditorial.setText(llibre.getEditorial());
 		    					txtFNumPag.setText(llibre.getNumPagines());
-		    					
 		    				} // end-if-else
 		    				session.getTransaction().commit(); // COMMIT DE LA TRANSACCIO
 	    				} catch(NumberFormatException nfe){
@@ -438,7 +448,7 @@ public class Principal extends JFrame {
 	} // end-mostrarDialeg
 	
 	/*
-	 * METODE DE VISUALITZAR
+	 * METODE visualitzar
 	 * ENCARREGAT DE MOSTRAR TOT EL CONTINGUT VISUAL DE L'APLICACIO PRINCIPAL
 	 * TAMBE INICIALITZA ELS BOTONS I ELS EVENTS DE CADASCU D'ELLS
 	 * EN CADA EVENT ES CRIDARA A UN DIALEG, EN FUNCIO DE LO QUE DESITJEM FER
@@ -539,7 +549,7 @@ public class Principal extends JFrame {
 	} // end-visualitzar
 	
 	/*
-	 * METODE DE CONFIGURACIO
+	 * METODE configuracio
 	 * AQUEST UNICAMENT S'ENCARREGA DE INICIAR EL PROCES DE CONFIGURACIO D'HIBERNATE
 	 * */
 	public static void configuracio() {
@@ -555,13 +565,12 @@ public class Principal extends JFrame {
 	} // end-configuracio
 
 	/*
-	 * METODE MAIN
+	 * METODE main
 	 * PRIMERAMENT, INICIARA LA CONEXIO D'HIBERNATE, DESPRES APLICARA UN TEMA A LA UI ANOMENAT -Nimbus- PER A DONAR-LI UNA APARENÇA MES AGRADABLE
 	 * FINALMENT, S'INICIA EL PROGRAMA! :D
 	 * */
 	public static void main(String[] args) {
 		configuracio();
-
 		try {
 			UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel"); // Set cross-platform Java L&F (also called "Nimbus")
 		} catch (Exception e) {

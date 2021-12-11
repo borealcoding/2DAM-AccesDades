@@ -1,12 +1,10 @@
 package es.florida.accesdades.ae5;
-
 /*
  * @author Eduardo Rua Chamorro | 2. DAM - Florida Universitaria
  * @version AE5.0 - Acces a Dades
- * @description 
+ * @description Aquest programa no implementa l'ampliacio!
  * */
-
-// llibreries importades
+//IMPORTACIO DE LLIBRERIES
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
