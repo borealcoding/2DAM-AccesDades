@@ -37,10 +37,11 @@ public class Principal extends JFrame {
 	} // end-constructor
 	
 	/*
-	 * METODE mostrarDialeg
-	 * TE COM A FUNCIO LA DE MOSTRAR UN DIALEG PER CADA BOTO QUE POLSEM
-	 * CADA DIALEG TINDRA UNES CARACTERISTIQUES DISTINTES, I S'HI ADAPTARA A LA PROBLEMATICA DE LES FUNCIONALITATS IMPLEMENTADES EN EL SEU CAS.
-	 * 
+	 * METODE: mostrarDialeg
+	 * PARAMETRES: int dialogId -> IDENTIFICARA AL JDIALOG QUE TINDRA QUE MOSTRAR-SE
+	 * AQUEST METODE ES CRIDA EN CADASCU DELS EVENTS DE CADA BOTO DEL MENU (VAR: contentPane)
+	 * EN FUNCIO DEL PARAMETRE ENVIAT, S'EXECUTARA UN JDIALOG AMB LES CARACTERISTIQUES ESPECIFIQUES PER A CADA CAS,
+	 * ADAPTANT-SE A LA SEUA PROBLEMATICA 
 	 * */
 	public static void mostrarDialeg(int dialogId) {
 		try {
@@ -126,22 +127,24 @@ public class Principal extends JFrame {
     		
     		/*
     		 * DIALEG PER A MOSTRAR TOTS ELS TITOLS DE LA BIBLIOTECA
-    		 * 
+    		 * ELS PROCEDIMENTS EXECUTATS DINS DEL MATEIX ESTAN COMENTATS PER SEPARAT
     		 * */
 	        if(dialogId == 1) {
 	        	try {
 	        		session.beginTransaction(); // INICI DE LA TRANSACCIO
-					System.err.println("> SESSIO INICIADA CORRECTAMENT\n");
-					String resultatSentencia = "";
+					System.err.println("> SESSIO INICIADA CORRECTAMENT\n"); 
+					String resultatSentencia = ""; // ACI ANIREM GUARDANT-HI LA INFORMACIO QUE DESPRES MOSTRAREM AL TEXTAREA
 					@SuppressWarnings("rawtypes")
 					List biblioteca = new ArrayList();
-					biblioteca = session.createQuery("FROM Llibre").list();
+					biblioteca = session.createQuery("FROM Llibre").list(); // ES FA UNA LLISTA AMB TOTS ELS TITOLS DE LA TABLA LLIBRE
 					
+					// RECOLLIREM ELS TITOLS, PER A FINALMENT MOSTRAR-LOS AMB EL SEU ID I TITOL
 					for (Object obj : biblioteca) {
 						Llibre llibre = (Llibre) obj;
 						resultatSentencia += llibre.getIdentificador()+" - "+llibre.getTitol()+"\n";
 					} // end-for
 					
+					// PER DIVERSOS PROBLEMES, HE CREGUT CONVENIENT MOSTRAR LA INFORMACIO RECOLLIDA EN UN JFRAME AUXILIAR QUE TINDREM A LA CLASSE FrameAuxiliar
 					FrameAuxiliar frameAux = new FrameAuxiliar();
 					frameAux.getTextArea().setText(resultatSentencia);
 					frameAux.setVisible(true);
@@ -161,7 +164,7 @@ public class Principal extends JFrame {
 	        
 	        /*
     		 * DIALEG PER A MOSTRAR LA DESCRIPCIO D'UN LLIBRE SEGONS EL SEU ID
-    		 * 
+    		 * ELS PROCEDIMENTS EXECUTATS DINS DEL MATEIX ESTAN COMENTATS PER SEPARAT
     		 * */ 
 	        if(dialogId == 2) {
 	        	jd.getContentPane().setLayout(null); // LAYOUT DEL DIALEG PER AL METODE DE CONSULTAR LLIBRE
@@ -178,17 +181,20 @@ public class Principal extends JFrame {
 	    		txtFNumPag.setEditable(false);
 
 	    		JButton btnExecucio = new JButton("Generar informaci\u00F3 per l'ID");
+	    		// AQUEST BOTO S'ENCARREGA DE, UNA VEGADA S'HAJA INDICAT EL ID DEL LLIBRE QUE VOLEM CONSULTAR, MOSTRAR LA INFORMACIO DE TOTS ELS SEUS ATRIBUTS
 	    		btnExecucio.addActionListener(new ActionListener() {
 	    			public void actionPerformed(ActionEvent e) {
 	    				try {
 		    				session.beginTransaction(); // INICI DE LA TRANSACCIO
 		    				System.err.println("> SESSIO INICIADA CORRECTAMENT\n");
-	    					int id = Integer.parseInt(txtFIdLlibre.getText());
-		    				Llibre llibre = (Llibre) session.get(Llibre.class, id);
+	    					int id = Integer.parseInt(txtFIdLlibre.getText()); // RECOLLIM L'ID INDICAT EN EL TEXTFIELD
+		    				Llibre llibre = (Llibre) session.get(Llibre.class, id); // EL PROCESSEM, OBTENINT EL LLIBRE QUE CORRESPON AMB AQUEST ID
 		    				
 		    				if(llibre==null) {
+		    					// MISSATGE D'ERROR QUE ES MOSTRARA SI EL ID INDICAT NO ES VALID, ES A DIR, SI INDIQUEM UN ID D'UN LLIBRE QUE NO EXISTEIX, O BE, ESCRIVIM ALGUNA LLETRA
 		    					JOptionPane.showMessageDialog(new JFrame(), "El ID "+id+" no es valid!", "ERROR! :(", JOptionPane.ERROR_MESSAGE);
 		    				} else {
+		    					// EN EL CAS DE QUE TOT VAJA BE, S'OBTINDRA LA INFORMACIO DE CADA ATRIBUT PER A MOSTRAR-SE EN EL SEU TEXTFIELD CORRESPONENT
 		    					txtFTitol.setText(llibre.getTitol());
 		    					txtFAutor.setText(llibre.getAutor());
 		    					txtFAnyN.setText(llibre.getAnyNaixement());
@@ -232,12 +238,11 @@ public class Principal extends JFrame {
 	    		// VISUALITZACIO DEL JDIALOG
 		        jd.setVisible(true);
 		        jd.setLocationRelativeTo(null);
-		       
 	        } // end-if
 	        
 	        /*
     		 * DIALEG PER A CREAR UN LLIBRE SEGONS ELS SEUS ATRIBUTS
-    		 * 
+    		 * ELS PROCEDIMENTS EXECUTATS DINS DEL MATEIX ESTAN COMENTATS PER SEPARAT
     		 * */
 	        if(dialogId == 3) {
 	        	jd.getContentPane().setLayout(null); // LAYOUT DEL DIALEG PER AL METODE DE CREAR LLIBRE
@@ -266,19 +271,21 @@ public class Principal extends JFrame {
         					String strNumPagines = txtFNumPag.getText();
         					
         					if(strTitol.equals("") || strAutor.equals("") || strAnyPublicacio.equals("") || strEditorial.equals("") || strNumPagines.equals("")) {
-        						// per a evitar camps buits (que de per si son NOT NULL), comprobarem si ens hem deixat algun camp sense omplir
+        						// PER A EVITAR CAMPS BUITS (QUE DE PER SI SON NOT NULL), COMPROBAREM SI ENS HEM DEICAT ALGUN CAMP SENSE OMPLIR
         						JOptionPane.showMessageDialog(new JFrame(), "Pareix que t'has oblidat d'omplir un camp de text!", "ERROR! :(", JOptionPane.ERROR_MESSAGE);
         					} else {
-        						strAnyNaixement = strAnyNaixement.equals("") ? "N.C" : strAnyNaixement; // nomes el any de naixement pot ser null, aleshores li assignarem un N.C (No consta) si resulta que no li hem passat cap valor
+        						// NOMES EL ANY DE NAIXEMENT POT SER NULL, ALESHORES LI ASSIGNAREM UN N.C (NO CONSTA) SI RESULTA QUE NO LI HEM PASSAT CAP VALOR
+        						strAnyNaixement = strAnyNaixement.equals("") ? "N.C" : strAnyNaixement;
+        						// CREEM EL LLIBRE AMB ELS VALORS RECOLLITS
         						Llibre llibreNou = new Llibre(strTitol,strAutor,strAnyNaixement,strAnyPublicacio,strEditorial,strNumPagines);
             					@SuppressWarnings("unused")
     							Serializable id = session.save(llibreNou);
             					session.getTransaction().commit(); // COMMIT DE LA TRANSACCIO
-            					
+            					// PREGUNTEM AL USUARI SI VOLS AFEGIR MES LLIBRES
             					JOptionPane.showMessageDialog(new JFrame(), "Llibre afegit correctament amb l'ID "+llibreNou.getIdentificador(), "Avis", JOptionPane.INFORMATION_MESSAGE);	
             					decisio = JOptionPane.showInputDialog(null, "Vols afegir altre llibre? (s/n)").toLowerCase();
             					if(decisio.equals("s")) {
-            						// ressetejem les dades si volem afegir altre llibre, per a poder afegir noves dades facilment i evitar accidents
+            						// RESSETEJEM LES DADES SI VOLEM AFEGIR ALTRE LLIBRE, PER A PODER AFEGIR NOVES DADES FACILMENT I EVITAR ACCIDENTS
             						strTitol = ""; txtFTitol.setText("");
             						strAutor = ""; txtFAutor.setText("");
             						strAnyNaixement = ""; txtFAnyN.setText("");
@@ -286,7 +293,7 @@ public class Principal extends JFrame {
             						strEditorial = ""; txtFEditorial.setText("");
             						strNumPagines = ""; txtFNumPag.setText("");
             					} else {
-            						// sino desitjem afegir mes llibres, farem que es tanque el jdialog.
+            						// SINO DESITJEM AFEGIR MES, FAREM QUE ES TANQUE EL JDIALOG
             						jd.dispose();
             					} // end-if 2
         					} // end-if 1
@@ -327,7 +334,7 @@ public class Principal extends JFrame {
 	        
 	        /*
     		 * DIALEG PER A MODIFICAR ELS ATRIBUTS D'UN LLIBRE SEGONS EL SEU ID
-    		 * 
+    		 * ELS PROCEDIMENTS EXECUTATS DINS DEL MATEIX ESTAN COMENTATS PER SEPARAT
     		 * */
 	        if(dialogId == 4) {
 	        	jd.getContentPane().setLayout(null); // LAYOUT DEL DIALEG PER AL METODE DE MODIFICAR LLIBRE
@@ -349,37 +356,44 @@ public class Principal extends JFrame {
 	    				try {
 	    					session.beginTransaction(); // INICI DE LA TRANSACCIO
 	    					String decisio = "";
-	    					int id = Integer.parseInt(txtFIdLlibre.getText());
-		    				Llibre llibreModificat = (Llibre) session.get(Llibre.class, id);
+	    					int id = Integer.parseInt(txtFIdLlibre.getText()); // RECOLLIM L'ID INDICAT EN EL TEXTFIELD
+		    				Llibre llibreModificat = (Llibre) session.get(Llibre.class, id); // EL PROCESSEM, OBTENINT EL LLIBRE QUE CORRESPON AMB AQUEST ID
 		    				
 		    				if(llibreModificat==null) {
+		    					// MISSATGE D'ERROR QUE ES MOSTRARA SI EL ID INDICAT NO ES VALID, ES A DIR, SI INDIQUEM UN ID D'UN LLIBRE QUE NO EXISTEIX, O BE, ESCRIVIM ALGUNA LLETRA
 		    					JOptionPane.showMessageDialog(new JFrame(), "El ID "+id+" no es valid!", "ERROR! :(", JOptionPane.ERROR_MESSAGE);
 		    				} else {
-		    					llibreModificat.setTitol(txtFTitol.getText());
-		    					llibreModificat.setAutor(txtFAutor.getText());
-		    					llibreModificat.setAnyNaixement(txtFAnyN.getText());
-		    					llibreModificat.setAnyPublicacio(txtFAnyP.getText());
-		    					llibreModificat.setEditorial(txtFEditorial.getText());
-		    					llibreModificat.setNumPagines(txtFNumPag.getText());
+		    					if(txtFTitol.getText().equals("") || txtFAutor.getText().equals("") || txtFAnyP.getText().equals("") || txtFEditorial.getText().equals("") || txtFNumPag.getText().equals("")) {
+	        						// PER A EVITAR CAMPS BUITS (QUE DE PER SI SON NOT NULL), COMPROBAREM SI ENS HEM DEICAT ALGUN CAMP SENSE OMPLIR
+	        						JOptionPane.showMessageDialog(new JFrame(), "Pareix que t'has oblidat d'omplir un camp de text!", "ERROR! :(", JOptionPane.ERROR_MESSAGE);
+		    					} else {
+		    						llibreModificat.setTitol(txtFTitol.getText());
+			    					llibreModificat.setAutor(txtFAutor.getText());
+			    					llibreModificat.setAnyNaixement(txtFAnyN.getText());
+			    					llibreModificat.setAnyPublicacio(txtFAnyP.getText());
+			    					llibreModificat.setEditorial(txtFEditorial.getText());
+			    					llibreModificat.setNumPagines(txtFNumPag.getText());
+			    					
+			    					session.update(llibreModificat); // SENTENCIA UPDATE
+				    				session.getTransaction().commit(); // COMMIT DE LA TRANSACCIO
+				    				
+				    				JOptionPane.showMessageDialog(new JFrame(), "Llibre amb ID "+llibreModificat.getIdentificador()+" modificat correctament", "Avis", JOptionPane.INFORMATION_MESSAGE);
+				    				decisio = JOptionPane.showInputDialog(null, "Vols modificar altre llibre? (s/n)").toLowerCase();
+		        					if(decisio.equals("s")) {
+		        						// RESSETEJEM LES DADES SI VOLEM MODIFICAR ALTRE LLIBRE, PER A PODER AFEGIR NOVES DADES FACILMENT I EVITAR ACCIDENTS
+		        						txtFIdLlibre.setText("");
+		        						txtFTitol.setText("");
+		        						txtFAutor.setText("");
+		        						txtFAnyN.setText("");
+		        						txtFAnyP.setText("");
+		        						txtFEditorial.setText("");
+		        						txtFNumPag.setText("");
+		        					} else {
+		        						// SINO DESITJEM MODIFICAR MES, FAREM QUE ES TANQUE EL JDIALOG
+		        						jd.dispose();
+		        					} // end-if-else
+		    					} // end-if-else 2
 		    				} // end-if-else
-		    				session.update(llibreModificat); // SENTENCIA UPDATE
-		    				session.getTransaction().commit(); // COMMIT DE LA TRANSACCIO
-		    				
-		    				JOptionPane.showMessageDialog(new JFrame(), "Llibre amb ID "+llibreModificat.getIdentificador()+" modificat correctament", "Avis", JOptionPane.INFORMATION_MESSAGE);
-		    				decisio = JOptionPane.showInputDialog(null, "Vols modificar altre llibre? (s/n)").toLowerCase();
-        					if(decisio.equals("s")) {
-        						// ressetejem les dades si volem afegir altre llibre, per a poder afegir noves dades facilment i evitar accidents
-        						txtFIdLlibre.setText("");
-        						txtFTitol.setText("");
-        						txtFAutor.setText("");
-        						txtFAnyN.setText("");
-        						txtFAnyP.setText("");
-        						txtFEditorial.setText("");
-        						txtFNumPag.setText("");
-        					} else {
-        						// sino desitjem modificar mes llibres, farem que es tanque el jdialog.
-        						jd.dispose();
-        					} // end-if 2
 	    				} catch(NumberFormatException nfe) {
 	    	        		nfe.printStackTrace();
 	    					JOptionPane.showMessageDialog(new JFrame(), "TENS QUE INDICAR UN ID!\nEL ERROR HA DONAT CONFLICTE EN LA TRANSACCIO\nPER RAONS DE SEGURETAT ES REINICIARA :)", "ERROR! :(", JOptionPane.ERROR_MESSAGE);
@@ -398,8 +412,6 @@ public class Principal extends JFrame {
 	    		jd.getContentPane().add(tagDialog);
 	    		jd.getContentPane().add(txtFIdLlibre);
 	    		jd.getContentPane().add(tagIdLlibre);
-	    		jd.getContentPane().add(txtFIdLlibre);
-	    		jd.getContentPane().add(tagIdLlibre);
 	    		jd.getContentPane().add(txtFTitol);
 	    		jd.getContentPane().add(tagTitol);
 	    		jd.getContentPane().add(txtFAutor);
@@ -407,6 +419,7 @@ public class Principal extends JFrame {
 	    		jd.getContentPane().add(txtFAnyN);
 	    		jd.getContentPane().add(tagAnyN);
 	    		jd.getContentPane().add(txtFAnyP);
+	    		jd.getContentPane().add(tagAnyP);
 	    		jd.getContentPane().add(txtFEditorial);
 	    		jd.getContentPane().add(tagEditorial);
 	    		jd.getContentPane().add(tagNumPag);
@@ -420,16 +433,17 @@ public class Principal extends JFrame {
 	        
 	        /*
     		 * DIALEG QUE MOSTRARA EL PROCES, MITJANÇANT INPUT DIALOGS, DE COM ESBORRAR UN LLIBRE SEGONS EL SEU ID
-    		 * ...
+    		 * ELS PROCEDIMENTS EXECUTATS DINS DEL MATEIX ESTAN COMENTATS PER SEPARAT
     		 * */
 	        if(dialogId == 5) {
 	        	try {
 	        		session.beginTransaction(); // INICI DE LA TRANSACCIO
 		    		System.err.println("> SESSIO INICIADA CORRECTAMENT\n");
 		    		
-		    		int idLlibre = Integer.parseInt(JOptionPane.showInputDialog(null, "Indica l'ID del llibre que desitjes esborrar"));
-		    		Llibre llibreCremat = (Llibre) session.get(Llibre.class, idLlibre);
+		    		int idLlibre = Integer.parseInt(JOptionPane.showInputDialog(null, "Indica l'ID del llibre que desitjes esborrar")); // RECOLLIM L'ID INDICAT EN EL TEXTFIELD
+		    		Llibre llibreCremat = (Llibre) session.get(Llibre.class, idLlibre); // EL PROCESSEM, OBTENINT EL LLIBRE QUE CORRESPON AMB AQUEST ID
 		    		if(llibreCremat == null) {
+		    			// MISSATGE D'ERROR QUE ES MOSTRARA SI EL ID INDICAT NO ES VALID, ES A DIR, SI INDIQUEM UN ID D'UN LLIBRE QUE NO EXISTEIX, O BE, ESCRIVIM ALGUNA LLETRA
 		    			JOptionPane.showMessageDialog(new JFrame(), "El ID "+idLlibre+" no es valid!", "ERROR! :(", JOptionPane.ERROR_MESSAGE);
 		    			resetHibernate();
 		    		} else {
