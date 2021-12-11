@@ -30,6 +30,7 @@ public class Principal extends JFrame {
 	private JPanel contentPane;
 	// DECLARACIONS STATIC (AQUESTES VARIABLES S'USEN EN DIVERSOS METODES)
 	static Session session;
+	static final int timer = 1000;
 	
 	public Principal() {
 		visualitzar();
@@ -128,23 +129,34 @@ public class Principal extends JFrame {
     		 * 
     		 * */
 	        if(dialogId == 1) {
-	        	session.beginTransaction(); // INICI DE LA TRANSACCIO
-				
-				System.err.println("> SESSIO INICIADA CORRECTAMENT\n");
-				String resultatSentencia = "";
-				@SuppressWarnings("rawtypes")
-				List biblioteca = new ArrayList();
-				biblioteca = session.createQuery("FROM Llibre").list();
-				for (Object obj : biblioteca) {
-					Llibre llibre = (Llibre) obj;
-					resultatSentencia += llibre.getIdentificador()+" - "+llibre.getTitol()+"\n";
-				} // end-for
-				FrameAuxiliar frameAux = new FrameAuxiliar();
-				frameAux.getTextArea().setText(resultatSentencia);
-				frameAux.setVisible(true);
-				frameAux.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // AQUESTA INSTRUCCIO EVITA QUE AL TANCAR LA FINESTRA, ES TANQUE TAMBE LA DEL MENU
-				
-				session.getTransaction().commit(); // COMMIT DE LA TRANSACCIO
+	        	try {
+	        		session.beginTransaction(); // INICI DE LA TRANSACCIO
+					System.err.println("> SESSIO INICIADA CORRECTAMENT\n");
+					String resultatSentencia = "";
+					@SuppressWarnings("rawtypes")
+					List biblioteca = new ArrayList();
+					biblioteca = session.createQuery("FROM Llibre").list();
+					
+					for (Object obj : biblioteca) {
+						Llibre llibre = (Llibre) obj;
+						resultatSentencia += llibre.getIdentificador()+" - "+llibre.getTitol()+"\n";
+					} // end-for
+					
+					FrameAuxiliar frameAux = new FrameAuxiliar();
+					frameAux.getTextArea().setText(resultatSentencia);
+					frameAux.setVisible(true);
+					frameAux.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // AQUESTA INSTRUCCIO EVITA QUE AL TANCAR LA FINESTRA, ES TANQUE TAMBE LA DEL MENU
+					session.getTransaction().commit(); // COMMIT DE LA TRANSACCIO
+				} catch(NumberFormatException nfe) {
+	        		nfe.printStackTrace();
+					JOptionPane.showMessageDialog(new JFrame(), "TENS QUE INDICAR UN ID!\nEL ERROR HA DONAT CONFLICTE EN LA TRANSACCIO\nPER RAONS DE SEGURETAT ES REINICIARA :)", "ERROR! :(", JOptionPane.ERROR_MESSAGE);
+					resetHibernate();
+				} catch (IllegalStateException ise) {
+					ise.printStackTrace();
+					JOptionPane.showMessageDialog(new JFrame(), "UNA TRANSACCIO ENCARA ACTIVA ESTA DONANT CONFLICTE!\nPER RAONS DE SEGURETAT ES REINICIARA :)", "ERROR! :(", JOptionPane.ERROR_MESSAGE);
+					resetHibernate();
+			    } // end try-catch
+	        	
 	        } // end-if
 	        
 	        /*
@@ -175,7 +187,7 @@ public class Principal extends JFrame {
 		    				Llibre llibre = (Llibre) session.get(Llibre.class, id);
 		    				
 		    				if(llibre==null) {
-		    					JOptionPane.showMessageDialog(new JFrame(), "El ID "+id+" no es valid! :(", "ERROR!", JOptionPane.ERROR_MESSAGE);
+		    					JOptionPane.showMessageDialog(new JFrame(), "El ID "+id+" no es valid!", "ERROR! :(", JOptionPane.ERROR_MESSAGE);
 		    				} else {
 		    					txtFTitol.setText(llibre.getTitol());
 		    					txtFAutor.setText(llibre.getAutor());
@@ -185,14 +197,14 @@ public class Principal extends JFrame {
 		    					txtFNumPag.setText(llibre.getNumPagines());
 		    				} // end-if-else
 		    				session.getTransaction().commit(); // COMMIT DE LA TRANSACCIO
-	    				} catch(NumberFormatException nfe){
-	    					JOptionPane.showMessageDialog(new JFrame(), nfe+"\nTENS QUE INDICAR UN ID! :(", "ERROR!", JOptionPane.ERROR_MESSAGE);
-	    			    	session.close();
-	    			    	configuracio();
+	    				} catch(NumberFormatException nfe) {
+	    	        		nfe.printStackTrace();
+	    					JOptionPane.showMessageDialog(new JFrame(), "TENS QUE INDICAR UN ID!\nEL ERROR HA DONAT CONFLICTE EN LA TRANSACCIO\nPER RAONS DE SEGURETAT ES REINICIARA :)", "ERROR! :(", JOptionPane.ERROR_MESSAGE);
+	    					resetHibernate();
 	    				} catch (IllegalStateException ise) {
-	    					JOptionPane.showMessageDialog(new JFrame(), ise+"\nTENS QUE INDICAR UN ID! :(", "ERROR!", JOptionPane.ERROR_MESSAGE);
-	    					session.close();
-	    					configuracio();
+	    					ise.printStackTrace();
+	    					JOptionPane.showMessageDialog(new JFrame(), "UNA TRANSACCIO ENCARA ACTIVA ESTA DONANT CONFLICTE!\nPER RAONS DE SEGURETAT ES REINICIARA :)", "ERROR! :(", JOptionPane.ERROR_MESSAGE);
+	    					resetHibernate();
 	    			    } // end try-catch
 	    			} // end-actionPerformed
 	    		});
@@ -242,45 +254,51 @@ public class Principal extends JFrame {
 	    		JButton btnExecucio = new JButton("Crear llibre");
 	    		btnExecucio.addActionListener(new ActionListener() {
 	    			public void actionPerformed(ActionEvent e) {
-    					session.beginTransaction(); // INICI DE LA TRANSACCIO
-    					System.err.println("> SESSIO INICIADA CORRECTAMENT\n");
-	    				String decisio = "";
-
-    					String strTitol = txtFTitol.getText();
-    					String strAutor = txtFAutor.getText();
-    					String strAnyNaixement = txtFAnyN.getText();
-    					String strAnyPublicacio = txtFAnyP.getText();
-    					String strEditorial = txtFEditorial.getText();
-    					String strNumPagines = txtFNumPag.getText();
-    					
-    					if(strTitol.equals("") || strAutor.equals("") || strAnyPublicacio.equals("") || strEditorial.equals("") || strNumPagines.equals("")) {
-    						// per a evitar camps buits (que de per si son NOT NULL), comprobarem si ens hem deixat algun camp sense omplir
-    						JOptionPane.showMessageDialog(new JFrame(), "Pareix que t'has oblidat d'omplir un camp de text :(", "ERROR!", JOptionPane.ERROR_MESSAGE);
-    						session.close();
-	    			    	configuracio();
-    					} else {
-    						strAnyNaixement = strAnyNaixement.equals("") ? "N.C" : strAnyNaixement; // nomes el any de naixement pot ser null, aleshores li assignarem un N.C (No consta) si resulta que no li hem passat cap valor
-    						Llibre llibreNou = new Llibre(strTitol,strAutor,strAnyNaixement,strAnyPublicacio,strEditorial,strNumPagines);
-        					@SuppressWarnings("unused")
-							Serializable id = session.save(llibreNou);
-        					session.getTransaction().commit(); // COMMIT DE LA TRANSACCIO
+    					try {
+    						session.beginTransaction(); // INICI DE LA TRANSACCIO
+        					System.err.println("> SESSIO INICIADA CORRECTAMENT\n");
+    	    				String decisio = "";
+        					String strTitol = txtFTitol.getText();
+        					String strAutor = txtFAutor.getText();
+        					String strAnyNaixement = txtFAnyN.getText();
+        					String strAnyPublicacio = txtFAnyP.getText();
+        					String strEditorial = txtFEditorial.getText();
+        					String strNumPagines = txtFNumPag.getText();
         					
-        					JOptionPane.showMessageDialog(new JFrame(), "Llibre afegit correctament amb l'ID "+llibreNou.getIdentificador(), "Avis", JOptionPane.INFORMATION_MESSAGE);	
-        					decisio = JOptionPane.showInputDialog(null, "Vols afegir altre llibre? (s/n)");
-        				
-        					if(decisio.equals("s")) {
-        						// ressetejem les dades si volem afegir altre llibre, per a poder afegir noves dades facilment i evitar accidents
-        						strTitol = ""; txtFTitol.setText("");
-        						strAutor = ""; txtFAutor.setText("");
-        						strAnyNaixement = ""; txtFAnyN.setText("");
-        						strAnyPublicacio = ""; txtFAnyP.setText("");
-        						strEditorial = ""; txtFEditorial.setText("");
-        						strNumPagines = ""; txtFNumPag.setText("");
+        					if(strTitol.equals("") || strAutor.equals("") || strAnyPublicacio.equals("") || strEditorial.equals("") || strNumPagines.equals("")) {
+        						// per a evitar camps buits (que de per si son NOT NULL), comprobarem si ens hem deixat algun camp sense omplir
+        						JOptionPane.showMessageDialog(new JFrame(), "Pareix que t'has oblidat d'omplir un camp de text!", "ERROR! :(", JOptionPane.ERROR_MESSAGE);
         					} else {
-        						// sino desitjem afegir mes llibres, farem que es tanque el jdialog.
-        						jd.dispose();
-        					} // end-if 2
-    					} // end-if 1
+        						strAnyNaixement = strAnyNaixement.equals("") ? "N.C" : strAnyNaixement; // nomes el any de naixement pot ser null, aleshores li assignarem un N.C (No consta) si resulta que no li hem passat cap valor
+        						Llibre llibreNou = new Llibre(strTitol,strAutor,strAnyNaixement,strAnyPublicacio,strEditorial,strNumPagines);
+            					@SuppressWarnings("unused")
+    							Serializable id = session.save(llibreNou);
+            					session.getTransaction().commit(); // COMMIT DE LA TRANSACCIO
+            					
+            					JOptionPane.showMessageDialog(new JFrame(), "Llibre afegit correctament amb l'ID "+llibreNou.getIdentificador(), "Avis", JOptionPane.INFORMATION_MESSAGE);	
+            					decisio = JOptionPane.showInputDialog(null, "Vols afegir altre llibre? (s/n)").toLowerCase();
+            					if(decisio.equals("s")) {
+            						// ressetejem les dades si volem afegir altre llibre, per a poder afegir noves dades facilment i evitar accidents
+            						strTitol = ""; txtFTitol.setText("");
+            						strAutor = ""; txtFAutor.setText("");
+            						strAnyNaixement = ""; txtFAnyN.setText("");
+            						strAnyPublicacio = ""; txtFAnyP.setText("");
+            						strEditorial = ""; txtFEditorial.setText("");
+            						strNumPagines = ""; txtFNumPag.setText("");
+            					} else {
+            						// sino desitjem afegir mes llibres, farem que es tanque el jdialog.
+            						jd.dispose();
+            					} // end-if 2
+        					} // end-if 1
+    					} catch(NumberFormatException nfe) {
+    		        		nfe.printStackTrace();
+    						JOptionPane.showMessageDialog(new JFrame(), "TENS QUE INDICAR UN ID!\nEL ERROR HA DONAT CONFLICTE EN LA TRANSACCIO\nPER RAONS DE SEGURETAT ES REINICIARA :)", "ERROR! :(", JOptionPane.ERROR_MESSAGE);
+    						resetHibernate();
+    					} catch (IllegalStateException ise) {
+    						ise.printStackTrace();
+    						JOptionPane.showMessageDialog(new JFrame(), "UNA TRANSACCIO ENCARA ACTIVA ESTA DONANT CONFLICTE!\nPER RAONS DE SEGURETAT ES REINICIARA :)", "ERROR! :(", JOptionPane.ERROR_MESSAGE);
+    						resetHibernate();
+    				    } // end try-catch
 	    			} // end-actionPerformed
 	    		});
 	    		btnExecucio.setFont(new Font("Segoe UI", Font.PLAIN, 11));
@@ -335,24 +353,20 @@ public class Principal extends JFrame {
 		    				Llibre llibreModificat = (Llibre) session.get(Llibre.class, id);
 		    				
 		    				if(llibreModificat==null) {
-		    					JOptionPane.showMessageDialog(new JFrame(), "El ID "+id+" no es valid! :(", "ERROR!", JOptionPane.ERROR_MESSAGE);
+		    					JOptionPane.showMessageDialog(new JFrame(), "El ID "+id+" no es valid!", "ERROR! :(", JOptionPane.ERROR_MESSAGE);
 		    				} else {
-		    					
 		    					llibreModificat.setTitol(txtFTitol.getText());
 		    					llibreModificat.setAutor(txtFAutor.getText());
 		    					llibreModificat.setAnyNaixement(txtFAnyN.getText());
 		    					llibreModificat.setAnyPublicacio(txtFAnyP.getText());
 		    					llibreModificat.setEditorial(txtFEditorial.getText());
 		    					llibreModificat.setNumPagines(txtFNumPag.getText());
-
 		    				} // end-if-else
 		    				session.update(llibreModificat); // SENTENCIA UPDATE
 		    				session.getTransaction().commit(); // COMMIT DE LA TRANSACCIO
 		    				
 		    				JOptionPane.showMessageDialog(new JFrame(), "Llibre amb ID "+llibreModificat.getIdentificador()+" modificat correctament", "Avis", JOptionPane.INFORMATION_MESSAGE);
-		    				
-		    				decisio = JOptionPane.showInputDialog(null, "Vols modificar altre llibre? (s/n)");
-	        				
+		    				decisio = JOptionPane.showInputDialog(null, "Vols modificar altre llibre? (s/n)").toLowerCase();
         					if(decisio.equals("s")) {
         						// ressetejem les dades si volem afegir altre llibre, per a poder afegir noves dades facilment i evitar accidents
         						txtFIdLlibre.setText("");
@@ -363,17 +377,17 @@ public class Principal extends JFrame {
         						txtFEditorial.setText("");
         						txtFNumPag.setText("");
         					} else {
-        						// sino desitjem afegir mes llibres, farem que es tanque el jdialog.
+        						// sino desitjem modificar mes llibres, farem que es tanque el jdialog.
         						jd.dispose();
         					} // end-if 2
-	    				} catch(NumberFormatException nfe){
-	    					JOptionPane.showMessageDialog(new JFrame(), nfe+"\nTENS QUE INDICAR UN ID! :(", "ERROR!", JOptionPane.ERROR_MESSAGE);
-	    			    	session.close();
-	    			    	configuracio();
+	    				} catch(NumberFormatException nfe) {
+	    	        		nfe.printStackTrace();
+	    					JOptionPane.showMessageDialog(new JFrame(), "TENS QUE INDICAR UN ID!\nEL ERROR HA DONAT CONFLICTE EN LA TRANSACCIO\nPER RAONS DE SEGURETAT ES REINICIARA :)", "ERROR! :(", JOptionPane.ERROR_MESSAGE);
+	    					resetHibernate();
 	    				} catch (IllegalStateException ise) {
-	    					JOptionPane.showMessageDialog(new JFrame(), ise+"\nTENS QUE INDICAR UN ID! :(", "ERROR!", JOptionPane.ERROR_MESSAGE);
-	    					session.close();
-	    					configuracio();
+	    					ise.printStackTrace();
+	    					JOptionPane.showMessageDialog(new JFrame(), "UNA TRANSACCIO ENCARA ACTIVA ESTA DONANT CONFLICTE!\nPER RAONS DE SEGURETAT ES REINICIARA :)", "ERROR! :(", JOptionPane.ERROR_MESSAGE);
+	    					resetHibernate();
 	    			    } // end try-catch
 	    			} // end-actionPerformed
 	    		});
@@ -406,7 +420,7 @@ public class Principal extends JFrame {
 	        
 	        /*
     		 * DIALEG QUE MOSTRARA EL PROCES, MITJANÇANT INPUT DIALOGS, DE COM ESBORRAR UN LLIBRE SEGONS EL SEU ID
-    		 * 
+    		 * ...
     		 * */
 	        if(dialogId == 5) {
 	        	try {
@@ -416,34 +430,35 @@ public class Principal extends JFrame {
 		    		int idLlibre = Integer.parseInt(JOptionPane.showInputDialog(null, "Indica l'ID del llibre que desitjes esborrar"));
 		    		Llibre llibreCremat = (Llibre) session.get(Llibre.class, idLlibre);
 		    		if(llibreCremat == null) {
-		    			JOptionPane.showMessageDialog(new JFrame(), "El ID "+idLlibre+" no es valid! :(", "ERROR!", JOptionPane.ERROR_MESSAGE);
+		    			JOptionPane.showMessageDialog(new JFrame(), "El ID "+idLlibre+" no es valid!", "ERROR! :(", JOptionPane.ERROR_MESSAGE);
+		    			resetHibernate();
 		    		} else {
-		    			String decisio = JOptionPane.showInputDialog(null, "Estas segur de que vols esborrar el llibre amb l'ID "+idLlibre+"?");
+		    			String decisio = JOptionPane.showInputDialog(null, "Estas segur de que vols esborrar el llibre amb l'ID "+idLlibre+"? (s/n)").toLowerCase();
 		    			if(decisio.equals("s")) {
 			    			llibreCremat.setIdentificador(idLlibre);
 			    			session.delete(llibreCremat); // SENTENCIA DELETE
 			    			session.getTransaction().commit(); // COMMIT DE LA TRANSACCIO
 			    			session.close(); // SENTENCIA PER A TANCAR LA SESSIO
-			    			JOptionPane.showMessageDialog(new JFrame(),"Llibre amb l'ID "+idLlibre+" esborrar correctament!", "Avis", JOptionPane.INFORMATION_MESSAGE);
-			    			// SOLUCION TEMPORAL: SE LLAMA AL METODO CONFIGURACIO() EN MUCHAS OCASIONES DEBIDO A QUE DESPUES DE TRABAJAR CON LAS FUNCIONES DE BORRAR, LAS SESIONES Y TRANSACCIONES SE MANTIENEN ACTIVAS A PESAR DE QUE SE TERMINÓ EL PROCESO ANTERIORMENTE. ASI QUE HE DECIDIDO QUE DE MOMENTO SE INICIARA DE NUEVO LA CONFIGURACION DE HIBERNATE DESPUES DE BORRAR UN LIBRO, O DESPUES DE EXPRESAR NEGACION, O TAMBIEN POR OMISION
-			    			configuracio();
+			    			JOptionPane.showMessageDialog(new JFrame(),"Llibre amb l'ID "+idLlibre+" esborrat correctament!", "Avis", JOptionPane.INFORMATION_MESSAGE);
+			    			// revisar
+			    			configHibernate();
 			    		} else {
-			    			session.close();
-			    			configuracio();
+			    			resetHibernate();
 			    		} // end-if 2
 		    		} // end-if 1
 	        	} catch(NumberFormatException nfe) {
-					JOptionPane.showMessageDialog(new JFrame(), nfe, "ERROR!", JOptionPane.ERROR_MESSAGE);
-			    	session.close();
-			    	configuracio();
+	        		nfe.printStackTrace();
+					JOptionPane.showMessageDialog(new JFrame(), "TENS QUE INDICAR UN ID!\nEL ERROR HA DONAT CONFLICTE EN LA TRANSACCIO\nPER RAONS DE SEGURETAT ES REINICIARA :)", "ERROR! :(", JOptionPane.ERROR_MESSAGE);
+					resetHibernate();
 				} catch (IllegalStateException ise) {
-					JOptionPane.showMessageDialog(new JFrame(), ise, "ERROR!", JOptionPane.ERROR_MESSAGE);
-					session.close();
-					configuracio();
+					ise.printStackTrace();
+					JOptionPane.showMessageDialog(new JFrame(), "UNA TRANSACCIO ENCARA ACTIVA ESTA DONANT CONFLICTE!\nPER RAONS DE SEGURETAT ES REINICIARA :)", "ERROR! :(", JOptionPane.ERROR_MESSAGE);
+					resetHibernate();
 			    } // end try-catch
 	        } // end-dialog5
 		} catch (Exception ex) {
-			JOptionPane.showMessageDialog(new JFrame(), ex, "ERROR en la consulta!", JOptionPane.ERROR_MESSAGE);
+			ex.printStackTrace();
+			JOptionPane.showMessageDialog(new JFrame(), "ALGO VA MAL... @.@\nPER RAONS DE SEGURETAT ES TANCARA EL PROGRAMA\nADEU :)","ERROR! :(" , JOptionPane.ERROR_MESSAGE);
 		} // end-try-catch
 	} // end-mostrarDialeg
 	
@@ -549,12 +564,12 @@ public class Principal extends JFrame {
 	} // end-visualitzar
 	
 	/*
-	 * METODE configuracio
+	 * METODE configHibernate
 	 * AQUEST UNICAMENT S'ENCARREGA DE INICIAR EL PROCES DE CONFIGURACIO D'HIBERNATE
 	 * */
-	public static void configuracio() {
+	public static void configHibernate() {
 		// Carrega la configuracio i crea una session factory
-		System.err.println("\n> CONFIGURANT CONEXIO D'HIBERNATE");
+		System.err.println("\n>CONFIGURANT CONEXIO D'HIBERNATE ...");
 		Configuration configuration = new Configuration().configure("hibernate.cfg.xml");
 		configuration.addClass(Llibre.class);
 		ServiceRegistry registry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
@@ -562,15 +577,38 @@ public class Principal extends JFrame {
 		
 		System.err.println("> INICIANT SESSIO ...\n");
 		session = sessionFactory.openSession(); // Obri una nova sessio de la session factory
-	} // end-configuracio
+	} // end-configHibernate
+	
+	/* METODE resetHibernate
+	 * COM ES POT OBSERVAR, S'ESTA RECURRINT AL METODE resetHibernate EN CADA CAS DE ERROR QUE ES REGISTRA A LO LLARG DEL PROGRAMA
+	 * DESPRES DE APAREIXER EL ERROR, LA TRANSACCIO INICIADA ANTERIORMENT ES QUEDA OBERTA, I PER MOLT QUE VULLGAM ACCEDIR A ALTRE METODE
+	 * ENS SERA IMPOSSIBLE, I HE CREGUT CONVENIENT REALITZAR AQUESTS PASSOS PER A PODER TANCAR LA TRANSACCIO, I REINICIAR HIBERNATE PER A
+	 * PODER TREBALLAR SENSE CAP PROBLEMA AMB QUALSEVOL DELS METODES.
+	 * ELS PROCEDIMENTS SON ELS SEGÜENTS
+	 * */
+	public static void resetHibernate() {
+		session.close(); // TANQUEM LA SESSIO
+		configHibernate(); // TORNEM A INICIALITZAR LA CONFIGURACIO D'HIBERNATE
+		JOptionPane opAvis = new JOptionPane("REINICIANT HIBERNATE ...", JOptionPane.WARNING_MESSAGE); // JOPTIONPANE QUE REGISTRARA EL MISSATGE
+		JDialog jdAvis = opAvis.createDialog(null, "Avis"); // JDIALOG QUE CONTINDRA EL JOPTIONPANE
+		jdAvis.setModal(false);
+		jdAvis.setVisible(true); // FEM QUE SIGA VISIBLE
 
+		new Timer(timer, new ActionListener() {
+		    @Override
+		    public void actionPerformed(ActionEvent e) {
+		    	jdAvis.setVisible(false);
+		    }
+		}).start(); // I DESPRES DE QUE PASSE 1 SEGON, ES TANCARA AUTOMATICAMENT EL DIALEG D'ADVERTENCIA
+	} // end-resetHibernate
+	
 	/*
 	 * METODE main
 	 * PRIMERAMENT, INICIARA LA CONEXIO D'HIBERNATE, DESPRES APLICARA UN TEMA A LA UI ANOMENAT -Nimbus- PER A DONAR-LI UNA APARENÇA MES AGRADABLE
 	 * FINALMENT, S'INICIA EL PROGRAMA! :D
 	 * */
 	public static void main(String[] args) {
-		configuracio();
+		configHibernate();
 		try {
 			UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel"); // Set cross-platform Java L&F (also called "Nimbus")
 		} catch (Exception e) {
