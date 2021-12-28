@@ -129,6 +129,10 @@ public class VistaTemporal extends JFrame {
     		 * */
 	        if(dialogId == 1) {
 	        	// codi que es executara
+	        	jd.getContentPane().setLayout(null); // LAYOUT DEL DIALEG PER AL METODE DE CONSULTAR LLIBRE
+	        	jd.setBounds(100, 100, 585, 361); // DIMENSIONS DEL JDIALOG
+	        	String resultat = "";
+	        	
 	        	// SENTENCIES NECESSARIES PER A LA CONEXIO DE MONGODB
 	    		MongoClient mongoClient = new MongoClient("localhost", 27017);
 	    		MongoDatabase mongoDb = mongoClient.getDatabase("Biblioteca");
@@ -137,14 +141,18 @@ public class VistaTemporal extends JFrame {
 		   		 * > Bson query = Filters.eq("artista", "System Of A Down");*/
 		   		MongoCursor<Document> cursor = coleccio.find().iterator();
 		   		while(cursor.hasNext()) {
-		   			System.out.println(cursor.next().toJson());
+		   			//System.out.println(cursor.next().toJson());
+		   			resultat += cursor.next().toJson();
+		   			resultat += "\n\n";
 		   		}
 		   		
-		   		/*System.out.println("\n> OBTENIM UNA DADA ESPECIFICA DEL DOCUMENT\n");
-		   		JSONObject obj = new JSONObject(cursor.next().toJson());
-		   		while(cursor.hasNext()) {
-		   			System.out.println(obj.getString("anyo"));
-		   		}*/
+		   		// PER DIVERSOS PROBLEMES, HE CREGUT CONVENIENT MOSTRAR LA INFORMACIO RECOLLIDA EN UN JFRAME AUXILIAR QUE TINDREM A LA CLASSE FrameAuxiliar
+				FrameAuxiliar frameAux = new FrameAuxiliar();
+				frameAux.getTextArea().setText(resultat);
+				frameAux.setLocationRelativeTo(null);
+				frameAux.setVisible(true);
+				frameAux.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // AQUESTA INSTRUCCIO EVITA QUE AL TANCAR LA FINESTRA, ES TANQUE TAMBE LA DEL MENU
+		        
 		   		mongoClient.close();
 	        } // end-if
 	        
