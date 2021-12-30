@@ -1,20 +1,12 @@
 package es.florida.accesDades.ae6;
-/*
- * @author Eduardo Rua Chamorro | 2. DAM - Florida Universitaria
- * @version [actividad] | [modulo]
- * @description [...]
- * */
-// IMPORTACIO DE LLIBRERIES
-import java.io.Serializable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-
+import java.util.NoSuchElementException;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 import org.bson.Document;
+import org.bson.conversions.Bson;
+import org.json.JSONObject;
 
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
@@ -45,7 +37,7 @@ public class VistaTemporal extends JFrame {
 		try {
 			// PROPIETATS GENERALS DEL JDIALOG
         	JDialog jd = new JDialog(new JFrame());
-			jd.getContentPane().setBackground(new Color(3, 131, 135));
+			jd.getContentPane().setBackground(new Color(0, 30, 43));
 	        
     		JLabel tagDialog = new JLabel("Titol descriptiu");
     		tagDialog.setHorizontalAlignment(SwingConstants.CENTER);
@@ -128,7 +120,6 @@ public class VistaTemporal extends JFrame {
     		 * ELS PROCEDIMENTS EXECUTATS DINS DEL MATEIX ESTAN COMENTATS PER SEPARAT
     		 * */
 	        if(dialogId == 1) {
-	        	// codi que es executara
 	        	jd.getContentPane().setLayout(null); // LAYOUT DEL DIALEG PER AL METODE DE CONSULTAR LLIBRE
 	        	jd.setBounds(100, 100, 585, 361); // DIMENSIONS DEL JDIALOG
 	        	String resultat = "";
@@ -137,14 +128,11 @@ public class VistaTemporal extends JFrame {
 	    		MongoClient mongoClient = new MongoClient("localhost", 27017);
 	    		MongoDatabase mongoDb = mongoClient.getDatabase("Biblioteca");
 	    		MongoCollection<Document> coleccio = mongoDb.getCollection("Llibres");
-		    	/* Tambe podem crear un objecte BSON per a usar filtres
-		   		 * > Bson query = Filters.eq("artista", "System Of A Down");*/
 		   		MongoCursor<Document> cursor = coleccio.find().iterator();
 		   		while(cursor.hasNext()) {
-		   			//System.out.println(cursor.next().toJson());
 		   			resultat += cursor.next().toJson();
 		   			resultat += "\n\n";
-		   		}
+		   		} // end-while
 		   		
 		   		// PER DIVERSOS PROBLEMES, HE CREGUT CONVENIENT MOSTRAR LA INFORMACIO RECOLLIDA EN UN JFRAME AUXILIAR QUE TINDREM A LA CLASSE FrameAuxiliar
 				FrameAuxiliar frameAux = new FrameAuxiliar();
@@ -178,18 +166,27 @@ public class VistaTemporal extends JFrame {
 	    		// AQUEST BOTO S'ENCARREGA DE, UNA VEGADA S'HAJA INDICAT EL ID DEL LLIBRE QUE VOLEM CONSULTAR, MOSTRAR LA INFORMACIO DE TOTS ELS SEUS ATRIBUTS
 	    		btnExecucio.addActionListener(new ActionListener() {
 	    			public void actionPerformed(ActionEvent e) {
-	    				// codi que es executara
 	    				// SENTENCIES NECESSARIES PER A LA CONEXIO DE MONGODB
-	    				Scanner sc = new Scanner(System.in);
 	    				MongoClient mongoClient = new MongoClient("localhost", 27017);
 	    				MongoDatabase mongoDb = mongoClient.getDatabase("Biblioteca");
 	    				MongoCollection<Document> coleccio = mongoDb.getCollection("Llibres");
 	    				
-	    				System.out.print("Indica l'ID del llibre que vols consultar: "); String idLlibre = sc.nextLine();
-	    				MongoCursor<Document> cursor = coleccio.find(Filters.eq("Id", idLlibre)).iterator();
-	    				while(cursor.hasNext() ) {
-	    					System.out.println(cursor.next().toJson());
-	    				}
+	    				String idLlibre = txtFIdLlibre.getText(); // RECOLLIM L'ID INDICAT EN EL TEXTFIELD
+	    				try {
+	    					Bson filtreId = Filters.eq("Id", idLlibre);
+		    				MongoCursor<Document> cursor = coleccio.find(filtreId).iterator();
+		    				JSONObject document = new JSONObject(cursor.next().toJson());
+		    				
+		    				txtFTitol.setText(document.getString("Titol"));
+	    					txtFAutor.setText(document.getString("Autor"));
+	    					txtFAnyN.setText(document.getString("Any_naixement"));
+	    					txtFAnyP.setText(document.getString("Any_publicacio"));
+	    					txtFEditorial.setText(document.getString("Editorial"));
+	    					txtFNumPag.setText(document.getString("Nombre_pagines"));
+	    				} catch (NoSuchElementException nsee) {
+	    					nsee.printStackTrace();
+	    					JOptionPane.showMessageDialog(new JFrame(),"INTRODUEIX UN ID VALID!\nID INDICAT: "+idLlibre, "ERROR! :(", JOptionPane.ERROR_MESSAGE);
+	    			    } // end try-catch
 	    				mongoClient.close();
 	    			} // end-actionPerformed
 	    		});
@@ -223,12 +220,13 @@ public class VistaTemporal extends JFrame {
     		 * DIALEG PER A CREAR UN LLIBRE SEGONS ELS SEUS ATRIBUTS
     		 * ELS PROCEDIMENTS EXECUTATS DINS DEL MATEIX ESTAN COMENTATS PER SEPARAT
     		 * */
-	        if(dialogId == 3) {
+	        if(dialogId == 3) {	
 	        	jd.getContentPane().setLayout(null); // LAYOUT DEL DIALEG PER AL METODE DE CREAR LLIBRE
 	        	jd.setBounds(100, 100, 585, 361); // DIMENSIONS DEL JDIALOG
 	        	
 	        	// MODIFICACIONS DE CARACTERISTIQUES ESPECIFIQUES PER A AQUEST DIALEG
-	        	tagDialog.setText("SISTEMA DE CREACIÓ DE LLIBRES");
+	        	tagDialog.setText("SISTEMA DE CREACIO DE LLIBRES");
+	        	txtFIdLlibre.setEditable(true);
 	    		txtFTitol.setEditable(true);
 	    		txtFAutor.setEditable(true);
 	    		txtFAnyN.setEditable(true);
@@ -238,49 +236,69 @@ public class VistaTemporal extends JFrame {
 	    		JButton btnExecucio = new JButton("Crear llibre");
 	    		btnExecucio.addActionListener(new ActionListener() {
 	    			public void actionPerformed(ActionEvent e) {
-    					// codi que es te que executar
 	    				// SENTENCIES NECESSARIES PER A LA CONEXIO DE MONGODB
 	    				MongoClient mongoClient = new MongoClient("localhost", 27017);
 	    				MongoDatabase mongoDb = mongoClient.getDatabase("Biblioteca");
 	    				MongoCollection<Document> coleccio = mongoDb.getCollection("Llibres");
 	    				
-	    				Scanner sc = new Scanner(System.in);
-	    				String camp = "", valor = "", decisio = "", pregunta = "Vols afegir altre llibre?: ";
+	    				String camp = "", valor = "", decisio = "";
 	    				Document doc = new Document();
-	    				
-	    				camp = "Id";
-	    				System.out.print(camp+": "); valor = sc.nextLine();
-	    				doc.append(camp, valor);
-	    				
-	    				camp = "Titol";
-	    				System.out.print(camp+": "); valor = sc.nextLine();
-	    				doc.append(camp, valor);
-	    				
-	    				camp = "Autor";
-	    				System.out.print(camp+": "); valor = sc.nextLine();
-	    				doc.append(camp, valor);
-	    				
-	    				camp = "Any_naixement";
-	    				System.out.print(camp+": "); valor = sc.nextLine();
-	    				doc.append(camp, valor);
-	    				
-	    				camp = "Any_publicacio";
-	    				System.out.print(camp+": "); valor = sc.nextLine();
-	    				doc.append(camp, valor);
-	    				
-	    				camp = "Editorial";
-	    				System.out.print(camp+": "); valor = sc.nextLine();
-	    				doc.append(camp, valor);
-	    				
-	    				camp = "Nombre_pagines";
-	    				System.out.print(camp+": "); valor = sc.nextLine();
-	    				doc.append(camp, valor);
-	    				
-	    				coleccio.insertOne(doc);
-//	    				doc.append("titulo", "Hunting High and Low");
-	    				
-	    				/* Tambe podem pasar-li una llista de Documents que vullgem crear!
-	    				 * coleccio.insertMany(llista);*/
+	    				String idLlibre = txtFIdLlibre.getText();
+    					String strTitol = txtFTitol.getText(); String strAnyNaixement = txtFAnyN.getText();
+    					String strAutor = txtFAutor.getText(); String strAnyPublicacio = txtFAnyP.getText();
+    					String strEditorial = txtFEditorial.getText(); String strNumPagines = txtFNumPag.getText();
+	    				try {    	    				
+        					if(strTitol.equals("") || strAutor.equals("") || strAnyPublicacio.equals("") || strEditorial.equals("") || strNumPagines.equals("")) {
+        						// PER A EVITAR CAMPS BUITS (QUE DE PER SI SON NOT NULL), COMPROBAREM SI ENS HEM DEICAT ALGUN CAMP SENSE OMPLIR
+        						JOptionPane.showMessageDialog(new JFrame(), "Pareix que t'has oblidat d'omplir un camp de text!", "ERROR! :(", JOptionPane.ERROR_MESSAGE);
+        					} else {
+        						// NOMES EL ANY DE NAIXEMENT POT SER NULL, ALESHORES LI ASSIGNAREM UN N.C (NO CONSTA) SI RESULTA QUE NO LI HEM PASSAT CAP VALOR
+        						strAnyNaixement = strAnyNaixement.equals("") ? "N.C" : strAnyNaixement;
+        						
+        						camp = "Id"; valor = idLlibre;
+        	    				doc.append(camp, valor);
+        	    				
+        	    				camp = "Titol"; valor = strTitol;
+        	    				doc.append(camp, valor);
+        	    				
+        	    				camp = "Autor"; valor = strAutor;
+        	    				doc.append(camp, valor);
+        	    				
+        	    				camp = "Any_naixement"; valor = strAnyNaixement;
+        	    				doc.append(camp, valor);
+        	    				
+        	    				camp = "Any_publicacio"; valor = strAnyPublicacio;
+        	    				doc.append(camp, valor);
+        	    				
+        	    				camp = "Editorial"; valor = strEditorial;
+        	    				doc.append(camp, valor);
+        	    				
+        	    				camp = "Nombre_pagines"; valor = strNumPagines;
+        	    				doc.append(camp, valor);
+        	    				
+        	    				coleccio.insertOne(doc);
+
+            					// PREGUNTEM AL USUARI SI VOLS AFEGIR MES LLIBRES
+            					JOptionPane.showMessageDialog(new JFrame(), "Llibre afegit correctament amb l'ID "+idLlibre, "Avis", JOptionPane.INFORMATION_MESSAGE);	
+            					decisio = JOptionPane.showInputDialog(null, "Vols afegir altre llibre? (s/n)").toLowerCase();
+            					if(decisio.equals("s")) {
+            						// RESSETEJEM LES DADES SI VOLEM AFEGIR ALTRE LLIBRE, PER A PODER AFEGIR NOVES DADES FACILMENT I EVITAR ACCIDENTS
+            						strTitol = ""; txtFTitol.setText("");
+            						strAutor = ""; txtFAutor.setText("");
+            						strAnyNaixement = ""; txtFAnyN.setText("");
+            						strAnyPublicacio = ""; txtFAnyP.setText("");
+            						strEditorial = ""; txtFEditorial.setText("");
+            						strNumPagines = ""; txtFNumPag.setText("");
+            					} else {
+            						// SINO DESITJEM AFEGIR MES, FAREM QUE ES TANQUE EL JDIALOG
+            						jd.dispose();
+            					} // end-if 2
+        					} // end-if 1
+    					} catch (NoSuchElementException nsee) {
+	    					nsee.printStackTrace();
+	    					JOptionPane.showMessageDialog(new JFrame(),"INTRODUEIX UN ID VALID!\nID INDICAT: "+idLlibre, "ERROR! :(", JOptionPane.ERROR_MESSAGE);
+	    			    } // end try-catch
+
 	    				mongoClient.close();
 	    			} // end-actionPerformed
 	    		});
@@ -289,6 +307,8 @@ public class VistaTemporal extends JFrame {
 	    		
 	    		// VISUALITZACIO DELS COMPONENTS DEL JDIALOG
 	    		jd.getContentPane().add(tagDialog);
+	    		jd.getContentPane().add(txtFIdLlibre);
+	    		jd.getContentPane().add(tagIdLlibre);
 	    		jd.getContentPane().add(txtFTitol);
 	    		jd.getContentPane().add(tagTitol);
 	    		jd.getContentPane().add(txtFAutor);
@@ -329,17 +349,60 @@ public class VistaTemporal extends JFrame {
 	    		JButton btnExecucio = new JButton("Modificar llibre");
 	    		btnExecucio.addActionListener(new ActionListener() {
 	    			public void actionPerformed(ActionEvent e) {
-	    				// codi que es te que executar
-	    				// SENTENCIES NECESSARIES PER A LA CONEXIO DE MONGODB
-	    				Scanner sc = new Scanner(System.in);
+	    				// SENTENCIES NECESSARIES PER A LA CONEXIO DE MONGODB  				
 	    				MongoClient mongoClient = new MongoClient("localhost", 27017);
 	    				MongoDatabase mongoDb = mongoClient.getDatabase("Biblioteca");
 	    				MongoCollection<Document> coleccio = mongoDb.getCollection("Llibres");
 	    				
-	    				System.out.print("Indica l'ID del llibre que vols modificar: "); String idLlibre = sc.nextLine();
-	    				coleccio.updateOne(Filters.eq("Id", idLlibre), new Document("$set", new Document("artista", "anonimo")));
-	    				/* Tambe podem modificar mes d'un document a la vegada amb la seguent sentencia:
-	    				 * > coleccio.updateMany(Filters.eq("formato", "WAV"), new Document("$set", new	Document("formato", "OGG")));*/
+	    				String idLlibre = txtFIdLlibre.getText(); Bson filtreId = Filters.eq("Id", idLlibre);
+	    				String camp = "", valor = "", decisio = "";
+    					String strTitol = txtFTitol.getText(); String strAnyNaixement = txtFAnyN.getText();
+    					String strAutor = txtFAutor.getText(); String strAnyPublicacio = txtFAnyP.getText();
+    					String strEditorial = txtFEditorial.getText(); String strNumPagines = txtFNumPag.getText();
+	    				try {
+	    					if(txtFTitol.getText().equals("") || txtFAutor.getText().equals("") || txtFAnyP.getText().equals("") || txtFEditorial.getText().equals("") || txtFNumPag.getText().equals("")) {
+        						// PER A EVITAR CAMPS BUITS (QUE DE PER SI SON NOT NULL), COMPROBAREM SI ENS HEM DEICAT ALGUN CAMP SENSE OMPLIR
+        						JOptionPane.showMessageDialog(new JFrame(), "Pareix que t'has oblidat d'omplir un camp de text!", "ERROR! :(", JOptionPane.ERROR_MESSAGE);
+	    					} else {
+	    						camp = "Titol"; valor = strTitol;
+	    						coleccio.updateOne(filtreId, new Document("$set", new Document(camp, valor)));
+	    						
+	    						camp = "Autor"; valor = strAutor;
+	    						coleccio.updateOne(filtreId, new Document("$set", new Document(camp, valor)));
+	    						
+	    						strAnyNaixement = strAnyNaixement.equals("") ? "N.C" : strAnyNaixement;
+	    						camp = "Any_naixement"; valor = strAnyNaixement;
+	    						coleccio.updateOne(filtreId, new Document("$set", new Document(camp, valor)));
+	    						
+	    						camp = "Any_publicacio"; valor = strAnyPublicacio;
+	    						coleccio.updateOne(filtreId, new Document("$set", new Document(camp, valor)));
+	    						
+	    						camp = "Editorial"; valor = strEditorial;
+	    						coleccio.updateOne(filtreId, new Document("$set", new Document(camp, valor)));
+	    						
+	    						camp = "Nombre_pagines"; valor = strNumPagines;
+	    						coleccio.updateOne(filtreId, new Document("$set", new Document(camp, valor)));
+	    						
+			    				JOptionPane.showMessageDialog(new JFrame(), "Llibre amb ID "+idLlibre+" modificat correctament", "Avis", JOptionPane.INFORMATION_MESSAGE);
+			    				decisio = JOptionPane.showInputDialog(null, "Vols modificar altre llibre? (s/n)").toLowerCase();
+	        					if(decisio.equals("s")) {
+	        						// RESSETEJEM LES DADES SI VOLEM MODIFICAR ALTRE LLIBRE, PER A PODER AFEGIR NOVES DADES FACILMENT I EVITAR ACCIDENTS
+	        						txtFIdLlibre.setText("");
+	        						txtFTitol.setText("");
+	        						txtFAutor.setText("");
+	        						txtFAnyN.setText("");
+	        						txtFAnyP.setText("");
+	        						txtFEditorial.setText("");
+	        						txtFNumPag.setText("");
+	        					} else {
+	        						// SINO DESITJEM MODIFICAR MES, FAREM QUE ES TANQUE EL JDIALOG
+	        						jd.dispose();
+	        					} // end-if-else
+		    				} // end-if-else
+	    				} catch (NoSuchElementException nsee) {
+	    					nsee.printStackTrace();
+	    					JOptionPane.showMessageDialog(new JFrame(),"INTRODUEIX UN ID VALID!\nID INDICAT: "+idLlibre, "ERROR! :(", JOptionPane.ERROR_MESSAGE);
+	    			    } // end try-catch
 	    				mongoClient.close();
 	    			} // end-actionPerformed
 	    		});
@@ -370,27 +433,39 @@ public class VistaTemporal extends JFrame {
 	        } // end-dialog4
 	        
 	        /*
-    		 * DIALEG QUE MOSTRARA EL PROCES, MITJANÇANT INPUT DIALOGS, DE COM ESBORRAR UN LLIBRE SEGONS EL SEU ID
+    		 * DIALEG QUE MOSTRARA EL PROCES, MITJANï¿½ANT INPUT DIALOGS, DE COM ESBORRAR UN LLIBRE SEGONS EL SEU ID
     		 * ELS PROCEDIMENTS EXECUTATS DINS DEL MATEIX ESTAN COMENTATS PER SEPARAT
     		 * */
 	        if(dialogId == 5) {
 	        	// SENTENCIES NECESSARIES PER A LA CONEXIO DE MONGODB
-	        	Scanner sc = new Scanner(System.in);
 	    		MongoClient mongoClient = new MongoClient("localhost", 27017);
 	    		MongoDatabase mongoDb = mongoClient.getDatabase("Biblioteca");
 	    		MongoCollection<Document> coleccio = mongoDb.getCollection("Llibres");
+
+	    		String idLlibre = JOptionPane.showInputDialog(null, "Indica l'ID del llibre que desitjes esborrar"); // RECOLLIM L'ID INDICAT EN EL TEXTFIELD
 	    		
-	    		System.out.print("Indica l'ID del llibre que vols esborrar: "); String idLlibre = sc.nextLine();
-	    		coleccio.deleteMany(Filters.eq("Id", idLlibre));
-	    		/* Tambe podem esborrar mes d'un document amb:
-	    		 * > coleccio.deleteMany(Filters.eq("artista", "a-ha"));
-	    		 * Y si desitjem esborrar la coleccio sencera...
-	    		 * > coleccio.drop();*/
+	    			try {    	
+	    				if(idLlibre.equals("") || idLlibre.contains("[a-zA-Z]+") == false) {
+	    	    			JOptionPane.showMessageDialog(new JFrame(),"INTRODUEIX UN ID VALID!\nID INDICAT: "+idLlibre, "ERROR! :(", JOptionPane.ERROR_MESSAGE);
+	    	    		} else {
+	    	    			Bson filtreId = Filters.eq("Id", idLlibre);
+	    	    			String decisio = JOptionPane.showInputDialog(null, "Estas segur de que vols esborrar el llibre amb l'ID "+idLlibre+"? (s/n)").toLowerCase();
+			    			if(decisio.equals("s")) {
+			    				coleccio.deleteOne(filtreId); // EL PROCESSEM, OBTENINT EL LLIBRE QUE CORRESPON AMB AQUEST ID I L'ESBORREM
+				    			JOptionPane.showMessageDialog(new JFrame(),"Llibre amb l'ID "+idLlibre+" esborrat correctament!", "Avis", JOptionPane.INFORMATION_MESSAGE);
+				    		} else {
+				    			jd.dispose(); 
+				    		} // end-if
+	    	    		}
+		        	} catch (NoSuchElementException nsee) {
+						nsee.printStackTrace();
+						JOptionPane.showMessageDialog(new JFrame(),"INTRODUEIX UN ID VALID!\nID INDICAT: "+idLlibre, "ERROR! :(", JOptionPane.ERROR_MESSAGE);
+				    } // end try-catch
 	    		mongoClient.close();
 	        } // end-dialog5
 		} catch (Exception ex) {
+			System.err.println("\n> S'HA REGISTRAT UN ERROR, PERO AFORTUNADAMENT AQUEST NO AFECTA A LA CORRECTA EXECUCIO DEL PROGRAMA :)");
 			ex.printStackTrace();
-			JOptionPane.showMessageDialog(new JFrame(), "ALGO VA MAL... @.@\nPER RAONS DE SEGURETAT ES TANCARA EL PROGRAMA\nADEU :)","ERROR! :(" , JOptionPane.ERROR_MESSAGE);
 		} // end-try-catch
 	} // end-mostrarDialeg
 	
