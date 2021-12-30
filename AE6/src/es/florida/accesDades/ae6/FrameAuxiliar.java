@@ -36,7 +36,7 @@ public class FrameAuxiliar extends JFrame {
 		contentPane = new JPanel() {  
 			 public void paintComponent(Graphics g) {  
 		          Image img = Toolkit.getDefaultToolkit().getImage(  
-		        		  VistaTemporal.class.getResource("/img/appBackground2.jpg"));  
+		        		  Biblioteca.class.getResource("/img/appBackground2.jpg"));  
 		          g.drawImage(img, 0, 0, this.getWidth(), this.getHeight(), this);  
 		     }  
 		};
