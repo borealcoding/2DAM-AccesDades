@@ -199,7 +199,7 @@ public class Biblioteca extends JFrame {
 	    				MongoDatabase mongoDb = mongoClient.getDatabase("Biblioteca");
 	    				MongoCollection<Document> coleccio = mongoDb.getCollection("Llibres");
 	    				
-	    				String idLlibre = txtFIdLlibre.getText(); // RECOLLIM L'ID INDICAT EN EL TEXTFIELD
+	    				int idLlibre = Integer.parseInt(txtFIdLlibre.getText()); // RECOLLIM L'ID INDICAT EN EL TEXTFIELD
 	    				try {
 	    					Bson filtreId = Filters.eq("Id", idLlibre); // RECOLLIM EN UN OBJECTE BSON, EL FILTRE QUE FAREM SERVIR PER CERCAR L'ELEMENT DESITJAT
 		    				MongoCursor<Document> cursor = coleccio.find(filtreId).iterator(); // CURSOR QUE SELECCIONARA EL DOCUMENT QUE COMPLIXGA ELS REQUISITS DEL FILTRE
@@ -271,7 +271,7 @@ public class Biblioteca extends JFrame {
 	    				
 	    				String camp = "", valor = "", decisio = "";
 	    				Document doc = new Document();
-	    				String idLlibre = txtFIdLlibre.getText();
+	    				int idLlibre = getIdRecent() + 1;
     					String strTitol = txtFTitol.getText(); String strAnyNaixement = txtFAnyN.getText();
     					String strAutor = txtFAutor.getText(); String strAnyPublicacio = txtFAnyP.getText();
     					String strEditorial = txtFEditorial.getText(); String strNumPagines = txtFNumPag.getText();
@@ -287,8 +287,8 @@ public class Biblioteca extends JFrame {
         						 * MONGODB, A DIFERENCIA DELS LLENGUATGES SQL, TREBALLA AMB L'ESQUEMA CAMP:VALOR.
         						 * PER LO TANT, TANT PER A INSERTAR COM PER A MODIFICAR, SEGUIREM LES SEGÜENTS INSTRUCCIONS */
         						
-        						camp = "Id"; valor = idLlibre;
-        	    				doc.append(camp, valor);
+        						camp = "Id";
+        	    				doc.append(camp, idLlibre);
         	    				
         	    				camp = "Titol"; valor = strTitol;
         	    				doc.append(camp, valor);
@@ -315,7 +315,7 @@ public class Biblioteca extends JFrame {
             					decisio = JOptionPane.showInputDialog(null, "Vols afegir altre llibre? (s/n)").toLowerCase();
             					if(decisio.equals("s")) {
             						// RESSETEJEM LES DADES SI VOLEM AFEGIR ALTRE LLIBRE, PER A PODER AFEGIR NOVES DADES FACILMENT I EVITAR ACCIDENTS
-            						idLlibre = ""; txtFIdLlibre.setText("");
+            						txtFIdLlibre.setText("");
             						strTitol = ""; txtFTitol.setText("");
             						strAutor = ""; txtFAutor.setText("");
             						strAnyNaixement = ""; txtFAnyN.setText("");
@@ -339,8 +339,8 @@ public class Biblioteca extends JFrame {
 	    		
 	    		// VISUALITZACIO DELS COMPONENTS DEL JDIALOG
 	    		jd.getContentPane().add(tagDialog);
-	    		jd.getContentPane().add(txtFIdLlibre);
-	    		jd.getContentPane().add(tagIdLlibre);
+	    		//jd.getContentPane().add(txtFIdLlibre);
+	    		//jd.getContentPane().add(tagIdLlibre);
 	    		jd.getContentPane().add(txtFTitol);
 	    		jd.getContentPane().add(tagTitol);
 	    		jd.getContentPane().add(txtFAutor);
@@ -386,7 +386,8 @@ public class Biblioteca extends JFrame {
 	    				MongoDatabase mongoDb = mongoClient.getDatabase("Biblioteca");
 	    				MongoCollection<Document> coleccio = mongoDb.getCollection("Llibres");
 	    				
-	    				String idLlibre = txtFIdLlibre.getText(); Bson filtreId = Filters.eq("Id", idLlibre); // TORNEM A RECOLLIR EN UN OBJECTE BSON, EL FILTRE QUE FAREM SERVIR PER CERCAR L'ELEMENT DESITJAT
+	    				int idLlibre = Integer.parseInt(txtFIdLlibre.getText());
+	    				Bson filtreId = Filters.eq("Id", idLlibre); // TORNEM A RECOLLIR EN UN OBJECTE BSON, EL FILTRE QUE FAREM SERVIR PER CERCAR L'ELEMENT DESITJAT
 	    				String camp = "", valor = "", decisio = "";
     					String strTitol = txtFTitol.getText(); String strAnyNaixement = txtFAnyN.getText();
     					String strAutor = txtFAutor.getText(); String strAnyPublicacio = txtFAnyP.getText();
@@ -479,23 +480,22 @@ public class Biblioteca extends JFrame {
 	    		MongoDatabase mongoDb = mongoClient.getDatabase("Biblioteca");
 	    		MongoCollection<Document> coleccio = mongoDb.getCollection("Llibres");
 	    		
-	    		String idLlibre = JOptionPane.showInputDialog(null, "Indica l'ID del llibre que desitjes esborrar"); // RECOLLIM L'ID INDICAT EN EL TEXTFIELD
-    			try {    	
-    				if(idLlibre.equals("") || idLlibre.contains("[a-zA-Z]") == true) {
-    	    			JOptionPane.showMessageDialog(new JFrame(),"INTRODUEIX UN ID VALID!\nID INDICAT: "+idLlibre, "ERROR! :(", JOptionPane.ERROR_MESSAGE);
-    	    		} else {
-    	    			Bson filtreId = Filters.eq("Id", idLlibre);
-    	    			String decisio = JOptionPane.showInputDialog(null, "Estas segur de que vols esborrar el llibre amb l'ID "+idLlibre+"? (s/n)").toLowerCase();
-		    			if(decisio.equals("s")) {
-		    				coleccio.deleteOne(filtreId); // EL PROCESSEM, OBTENINT EL LLIBRE QUE CORRESPON AMB AQUEST ID I L'ESBORREM
-			    			JOptionPane.showMessageDialog(new JFrame(),"Llibre amb l'ID "+idLlibre+" esborrat correctament!", "Avis", JOptionPane.INFORMATION_MESSAGE);
-			    		} else {
-			    			jd.dispose(); 
-			    		} // end-if-else 2
-    	    		} // end-if-else
+	    		int idLlibre = Integer.parseInt(JOptionPane.showInputDialog(null, "Indica l'ID del llibre que desitjes esborrar")); // RECOLLIM L'ID INDICAT EN EL TEXTFIELD
+    			try { 	
+	    			Bson filtreId = Filters.eq("Id", idLlibre);
+	    			String decisio = JOptionPane.showInputDialog(null, "Estas segur de que vols esborrar el llibre amb l'ID "+idLlibre+"? (s/n)").toLowerCase();
+	    			if(decisio.equals("s")) {
+	    				coleccio.deleteOne(filtreId); // EL PROCESSEM, OBTENINT EL LLIBRE QUE CORRESPON AMB AQUEST ID I L'ESBORREM
+		    			JOptionPane.showMessageDialog(new JFrame(),"Llibre amb l'ID "+idLlibre+" esborrat correctament!", "Avis", JOptionPane.INFORMATION_MESSAGE);
+		    		} else {
+		    			jd.dispose();
+		    		} // end-if-else 2
 	        	} catch (NoSuchElementException nsee) {
 					nsee.printStackTrace();
 					JOptionPane.showMessageDialog(new JFrame(),"INTRODUEIX UN ID VALID!\nID INDICAT: "+idLlibre, "ERROR! :(", JOptionPane.ERROR_MESSAGE);
+			    } catch (NumberFormatException nfe) {
+			    	nfe.printStackTrace();
+			    	JOptionPane.showMessageDialog(new JFrame(),"NO HAS INTRODUIT UN NUMERO!\nID INDICAT: "+idLlibre, "ERROR! :(", JOptionPane.ERROR_MESSAGE);
 			    } // end try-catch
 	    		mongoClient.close(); // TANQUEM LA SESSIO DE MONGODB
 	        } // end-dialog5
@@ -613,6 +613,21 @@ public class Biblioteca extends JFrame {
 		btnEsborrar.setBounds(174, 290, 147, 37);
 		contentPane.add(btnEsborrar);
 	} // end-visualitzar
+	
+	public static int getIdRecent() {
+		MongoClient mongoClient = new MongoClient("localhost", 27017);
+		MongoDatabase mongoDb = mongoClient.getDatabase("Biblioteca");
+		MongoCollection<Document> coleccio = mongoDb.getCollection("Llibres");
+		MongoCursor<Document> cursor = coleccio.find().iterator();
+		int ultimLlibre = 1;
+		
+		while(cursor.hasNext()) {
+			JSONObject obj = new JSONObject(cursor.next().toJson());
+			ultimLlibre = obj.getInt("Id");
+		} // end-while
+		mongoClient.close();
+		return ultimLlibre;
+	} // end-getIdRecent
 
 	/*
 	 * METODE: main
