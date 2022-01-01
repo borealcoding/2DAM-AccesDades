@@ -14,8 +14,9 @@
 **> Observacions:**
 
 * Hi han comentaris en cada secció del codi que expliquen el comportament dels procediments que s'executen
-* S'ha afegit 1 metode apart dels indicats al PDF
+* S'han afegit 2 metodes apart dels indicats al PDF
     * mostrarDialeg
+    * getIdRecent
 
 El seu funcionament també està comentat, per a que és puga entendre bé.
 

@@ -614,6 +614,12 @@ public class Biblioteca extends JFrame {
 		contentPane.add(btnEsborrar);
 	} // end-visualitzar
 	
+	/*
+	 * METODE: getIdRecent
+	 * PARAMETRES: cap
+	 * DEFINICIO: metode que genera l'ultim ID de la coleccio, per a poder fer us d'aquest quan anem a crear un nou llibre
+	 * */
+	
 	public static int getIdRecent() {
 		MongoClient mongoClient = new MongoClient("localhost", 27017);
 		MongoDatabase mongoDb = mongoClient.getDatabase("Biblioteca");
