@@ -158,7 +158,8 @@ public class Biblioteca extends JFrame {
 		   		MongoCursor<Document> cursor = coleccio.find().iterator();
 		   		// BUCLE PER A MOSTRAR EL DOCUMENT LINIA A LINIA
 		   		while(cursor.hasNext()) {
-		   			resultat += cursor.next().toJson();
+		   			JSONObject obj = new JSONObject(cursor.next().toJson());
+		   			resultat += "Id: "+obj.getInt("Id")+" | Titol: "+obj.getString("Titol");
 		   			resultat += "\n\n";
 		   		} // end-while
 		   		

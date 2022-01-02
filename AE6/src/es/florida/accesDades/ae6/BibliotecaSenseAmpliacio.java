@@ -62,7 +62,8 @@ public class BibliotecaSenseAmpliacio {
 		 * > Bson query = Filters.eq("artista", "System Of A Down");*/
 		MongoCursor<Document> cursor = coleccio.find().iterator();
 		while(cursor.hasNext()) {
-			System.out.println(cursor.next().toJson());
+			JSONObject obj = new JSONObject(cursor.next().toJson());
+			System.out.println("Id: "+obj.getInt("Id")+" | Titol: "+obj.getString("Titol"));
 		}
 		
 		/*System.out.println("\n> OBTENIM UNA DADA ESPECIFICA DEL DOCUMENT\n");
@@ -74,7 +75,7 @@ public class BibliotecaSenseAmpliacio {
 	
 	public static void llegirLlibre(String idLlibre, MongoDatabase db, MongoCollection<Document> coleccio) {
 		MongoCursor<Document> cursor = coleccio.find(Filters.eq("Id", idLlibre)).iterator();
-		while(cursor.hasNext() ) {
+		while(cursor.hasNext()) {
 			System.out.println(cursor.next().toJson());
 		}
 	} // end-llegirLlibre
