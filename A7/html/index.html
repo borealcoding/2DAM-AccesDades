@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="val">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,16 +7,41 @@
     <script src="../js/script.js"></script>
     <script src = "https://unpkg.com/axios/dist/axios.min.js"></script>
     <title>Jugando con APIs</title>
+    <style>
+        h1 { margin-bottom: 0;}
+        section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        #icoPronostic { width: auto; height: 128px; display: none;}
+        .dades > span {font-weight: bold;}   
+    </style>
 </head>
 <body>
     <section>
         <h1>OpenWeather API</h1>
-        <label for="nom">Ciudad:</label>
-        <input id="ciutat" type="text" name="nom" placeholder="Introdueix una ciutat"><br/><br/>
-        <label for="temperatura">Temperatura:</label>
-        <input id="temperatura" type="text" name="temperatura" placeholder="Temperatura"><br/><br/>
-        <input id="saludar" type="submit" value="Saluda!">
-        <input id="consultar" type="submit" value="Consulta!">
+        <img id="icoPronostic" src="">
+        <span id="horaActual"></span>
+        <span>
+            <br/>
+            <label for="ciutat">Ciudad:</label>
+            <input id="ciutat" type="text" name="nom" placeholder="Introdueix una ciutat">
+            <br/><br/>
+        </span>
+        <p class="dades">Població:&nbsp;<span id="poblacio"></span></p>
+        <p class="dades">País:&nbsp;<span id="pais"></span></p>
+        <p class="dades">Descripció:&nbsp;<span id="descripcio"></span></p>
+        <p class="dades">Temperatura:&nbsp;<span id="temperatura"></span></p>
+        <p class="dades">Temperatura màxima:&nbsp;<span id="temperaturaMax"></span></p>
+        <p class="dades">Temperatura mínima:&nbsp;<span id="temperaturaMin"></span></p>
+        <p class="dades">Humitat:&nbsp;<span id="humitat"></span></p>
+        <p class="dades">Sensació termica:&nbsp;<span id="sensacioTermica"></span></p>
+        <span>
+            <input id="saludar" type="submit" value="Saluda!">
+            <input id="consultar" type="submit" value="Consulta!">
+        </span>
     </section>
 </body>
 </html>
