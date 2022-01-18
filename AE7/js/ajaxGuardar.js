@@ -1,6 +1,7 @@
 /* Funció que arreplega els valors del pronòstic consultat per a,
  * posteriorment, guardar-los a la base de dades.*/
 function guardar() {
+    // Obtenim els valors dels camps del formulari.
     var dataPronostic = document.getElementById('dataPronostic').textContent;
     var poblacio = document.getElementById('poblacio').textContent;
     var pais = document.getElementById('pais').textContent;
