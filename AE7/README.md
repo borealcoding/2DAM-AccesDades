@@ -26,11 +26,11 @@ La guia d'us oficial de la API la pots trobar en: [Call current weather data for
 **> Observacions:**
 * Hi han comentaris en cada secció del codi que expliquen el comportament dels procediments que s'executen
 * Els fitxers JavaScript estàn separats i cadascún d'ells te la seua propia utilitat
-    * [api.js](https://github.com/borealcoding/2DAM-AccesDades/blob/3bbf8a3a583200ba9389264c3f547e87da2cee9f/master/js/api.js) Inclou tot el codi necessari per a poder treballar amb la API i mostrar els resultats obtinguts en la pàgina web
-    * [ajaxGuardar.js](https://github.com/borealcoding/2DAM-AccesDades/blob/3bbf8a3a583200ba9389264c3f547e87da2cee9f/master/js/ajaxGuardar.js) Te com a unica funcionalitat enviar al servidor les dades obtingudes, amb les que treballarem posteriorment al fitxer PHP
-    * [animations.js](https://github.com/borealcoding/2DAM-AccesDades/blob/3bbf8a3a583200ba9389264c3f547e87da2cee9f/master/js/animations.js) S'encarrega sols de aplicar animacions per a mostrar/ocultar les dades del pronòstic. (Més enfocat al CSS)
+    * [api.js](https://github.com/borealcoding/2DAM-AccesDades/blob/7374550fcc27ae13d47dffef2cfb4927cf63272b/AE7/js/api.js) Inclou tot el codi necessari per a poder treballar amb la API i mostrar els resultats obtinguts en la pàgina web
+    * [ajaxGuardar.js](https://github.com/borealcoding/2DAM-AccesDades/blob/7374550fcc27ae13d47dffef2cfb4927cf63272b/AE7/js/ajaxGuardar.js) Te com a unica funcionalitat enviar al servidor les dades obtingudes, amb les que treballarem posteriorment al fitxer PHP
+    * [animations.js](https://github.com/borealcoding/2DAM-AccesDades/blob/7374550fcc27ae13d47dffef2cfb4927cf63272b/AE7/js/animations.js) S'encarrega sols de aplicar animacions per a mostrar/ocultar les dades del pronòstic. (Més enfocat al CSS)
 
-* S'inclou un [fitxer SQL](https://github.com/borealcoding/2DAM-AccesDades/blob/3bbf8a3a583200ba9389264c3f547e87da2cee9f/master/db/openweather.sql) per a poder crear la base de dades necessària per a poder treballar amb els procediments de la API i arreplegar la informació obtinguda.
+* S'inclou un [fitxer SQL](https://github.com/borealcoding/2DAM-AccesDades/blob/7374550fcc27ae13d47dffef2cfb4927cf63272b/AE7/db/openweather.sql) per a poder crear la base de dades necessària per a poder treballar amb els procediments de la API i arreplegar la informació obtinguda.
 
 > S'aprecien enormement els suggeriments per a poder millorar el codi! :D
 
