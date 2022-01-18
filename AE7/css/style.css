@@ -1,0 +1,107 @@
+body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #000;
+  background-color: #fff;
+  background-image: url("https://images5.alphacoders.com/569/thumb-1920-569815.jpg");
+}
+
+h1 { margin-bottom: 0; }
+
+p#infoData { display: none; }
+
+section#content {
+  margin-top: 20px;
+  padding: 20px;
+  width: 28em;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #a6eee89a;
+  background-image: none;
+  border-radius: 4px;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+} 
+
+section#content:hover { box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px; }
+
+section#infoPronostic {
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 0px;
+  overflow:hidden;
+}
+
+input[type="text"] {
+  padding: 10px 10px;
+  margin-right: 8px;
+  box-sizing: border-box;
+  border: 2px solid #037369;
+  border-radius: 4px;
+} input[type="text"]:focus {
+  outline: none;
+} input[type="text"]:hover {
+  border: 2.5px solid #05a699;
+}
+
+input[type="submit"] {
+  background-color: #023430;
+  color: white;
+  padding: 10px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+} input[type="submit"]:hover {
+  background-color: #035a53;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+} 
+
+input#guardar { display: none; margin-top: 10px;}
+
+span#inputPoblacio {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin: 20px;
+}
+
+img#icoPronostic {
+  width: auto;
+  height: 128px;
+  display: none;
+}
+
+span#temperaturaMax { color: darkred; }
+span#temperaturaMin { color: darkblue; }
+span#dataPronostic { font-weight: bold; }
+p.dades > span { font-weight: bold; }
+p.dades { margin-top: 5px; margin-bottom: 5px; }
+
+a#tornar {
+  display: none;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 20px 0px 20px;
+  border: 2px solid #023430;
+  border-radius: 100%;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+} a#tornar:hover {
+  border-color: #05a699;
+} a#tornar > img {
+  padding: 5px;
+  width: 25px;
+  height: 25px;
+}

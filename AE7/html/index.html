@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="val">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Eduardo Rua Chamorro">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="../js/ajaxGuardar.js"></script>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="shortcut icon" href="https://raw.githubusercontent.com/ioBroker/ioBroker.openweathermap/HEAD/admin/openweathermap.png">
+    <title>Jugant amb APIs</title>
+</head>
+<body>
+    <section id="content"> 
+        <h1>🌤️ OpenWeather API ⛈️</h1>
+        <img id="icoPronostic" src="">
+        <p id="infoData">Ultima actualització:&nbsp;<span id="dataPronostic"></span></p>
+        <span id="inputPoblacio">
+            <input id="ciutat" type="text" name="nom" placeholder="Introdueix una ciutat">
+            <input id="consultar" type="submit" value="Consulta el pronòstic" onclick="getOratge(), lliscarAvall()">
+        </span>
+        <section id="infoPronostic">
+            <p class="dades">Població:&nbsp;<span id="poblacio"></span></p>
+            <p class="dades">País:&nbsp;<span id="pais"></span></p>
+            <p class="dades">Descripció:&nbsp;<span id="descripcio"></span></p>
+            <p class="dades">Temperatura:&nbsp;<span id="temperatura"></span></p>
+            <p class="dades">Temperatura màxima:&nbsp;<span id="temperaturaMax"></span></p>
+            <p class="dades">Temperatura mínima:&nbsp;<span id="temperaturaMin"></span></p>
+            <p class="dades">Humitat:&nbsp;<span id="humitat"></span></p>
+            <p class="dades">Sensació termica:&nbsp;<span id="sensacioTermica"></span></p>
+        </section>
+        <input id="guardar" type="submit" value="Guarda el resultat" onclick="guardar()">
+        <a id="tornar" onclick="lliscarAmunt()"><img src="https://cdn-icons-png.flaticon.com/512/2223/2223672.png"></a>
+    </section>
+</body>
+</html>
