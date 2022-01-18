@@ -1,10 +1,3 @@
-window.onload = function() {
-    var btnEnviar = document.getElementById('saludar');
-    btnEnviar.onclick = missatge;
-    var btnConsultar = document.getElementById('consultar');
-    btnConsultar.onclick = getOratge;
-}
-
 function missatge() {
     alert("Botó polsat");
 } // end missatge
@@ -15,6 +8,7 @@ function getOratge() {
     .get("https://api.openweathermap.org/data/2.5/weather?q="+strCiutat+"&appid=6e222653bf09c3ec2cb99d004e9119a1")
     .then(response => {
         console.log(response.data);
+        let dataPronostic = new Date().toISOString().substring(0, 19).replace('T', ' ');
         let poblacio = response.data.name;
         let pais = response.data.sys.country;
         let descripcio = response.data.weather[0].description;
@@ -23,6 +17,8 @@ function getOratge() {
         let temperaturaMin = response.data.main.temp_min - 273.15;
         let humitat = response.data.main.humidity;
         let sensacioTermica = response.data.main.feels_like - 273.15;
+
+        document.getElementById('ciutat').value = "";
         document.getElementById('poblacio').textContent = poblacio;
         document.getElementById('pais').textContent = pais;
         document.getElementById('descripcio').textContent = descripcio;
@@ -32,9 +28,10 @@ function getOratge() {
         document.getElementById('humitat').textContent = humitat+"%";
         document.getElementById('sensacioTermica').textContent = sensacioTermica.toFixed(2)+"ºC";
         document.getElementById('icoPronostic').style.display = "block";
-        document.getElementById('horaActual').textContent = "Última actualización: "+new Date().toLocaleTimeString();
+        document.getElementById('dataPronostic').textContent = dataPronostic;
+
         if (descripcio.includes('clear') || descripcio.includes('sunny')) {
-            document.getElementById('icoPronostic').src = "https://www.creativefabrica.com/wp-content/uploads/2019/02/Sunny-Icon-by-Kanggraphic-7-580x386.jpg";
+            document.getElementById('icoPronostic').src = "https://www.iconninja.com/files/115/757/114/temperature-sunny-sun-weather-icon.png";
         } else if (descripcio.includes('cloud') || descripcio.includes('clouds')) {
             document.getElementById('icoPronostic').src = "https://www.iconninja.com/files/14/149/208/cloud-clouds-cloudy-weather-icon.png"
         } else if (descripcio.includes('rain') || descripcio.includes('rains')) {
@@ -42,11 +39,10 @@ function getOratge() {
         } else if (descripcio.includes('snow') || descripcio.includes('snowy')) {
             document.getElementById('icoPronostic').src = "https://www.iconninja.com/files/227/840/936/clouds-winter-weather-snow-icon.png"
         } 
-
     })
     .catch(error => {
         console.error(error);
         alert("No s'ha pogut obtenir la informació de la ciutat");
         // document.getElementById('error').textContent = "ERROR EN LA CONSULTA: " + error;
     });
-}
+} // end getOratge

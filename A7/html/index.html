@@ -4,31 +4,23 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="../js/script.js"></script>
-    <script src = "https://unpkg.com/axios/dist/axios.min.js"></script>
+    <meta name="author" content="Eduardo Rua Chamorro">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="../js/ajaxGuardar.js"></script>
+    <link rel="stylesheet" href="../css/style.css">
     <title>Jugando con APIs</title>
-    <style>
-        h1 { margin-bottom: 0;}
-        section {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        #icoPronostic { width: auto; height: 128px; display: none;}
-        .dades > span {font-weight: bold;}   
-    </style>
 </head>
 <body>
     <section>
+        <input id="saludar" type="submit" value="Saluda!" onclick="missatge()">
         <h1>OpenWeather API</h1>
         <img id="icoPronostic" src="">
-        <span id="horaActual"></span>
-        <span>
-            <br/>
-            <label for="ciutat">Ciudad:</label>
+        <p>Ùltima actualització:&nbsp;<span id="dataPronostic"></span></p>
+        <span id="inputPoblacio">
             <input id="ciutat" type="text" name="nom" placeholder="Introdueix una ciutat">
-            <br/><br/>
+            <input id="consultar" type="submit" value="Consulta el pronòstic" onclick="getOratge()">
         </span>
         <p class="dades">Població:&nbsp;<span id="poblacio"></span></p>
         <p class="dades">País:&nbsp;<span id="pais"></span></p>
@@ -38,10 +30,7 @@
         <p class="dades">Temperatura mínima:&nbsp;<span id="temperaturaMin"></span></p>
         <p class="dades">Humitat:&nbsp;<span id="humitat"></span></p>
         <p class="dades">Sensació termica:&nbsp;<span id="sensacioTermica"></span></p>
-        <span>
-            <input id="saludar" type="submit" value="Saluda!">
-            <input id="consultar" type="submit" value="Consulta!">
-        </span>
+        <input id="guardar" type="submit" value="Guarda el resultat" onclick="guardar()">
     </section>
 </body>
 </html>
