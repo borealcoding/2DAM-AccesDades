@@ -140,7 +140,7 @@ public class Principal extends JFrame {
 					
 					// RECOLLIREM ELS TITOLS, PER A FINALMENT MOSTRAR-LOS AMB EL SEU ID I TITOL
 					for (Object obj : biblioteca) {
-						Llibre llibre = (Llibre) obj;
+						Destinacio llibre = (Destinacio) obj;
 						resultatSentencia += llibre.getIdentificador()+" - "+llibre.getTitol()+"\n";
 					} // end-for
 					
@@ -188,7 +188,7 @@ public class Principal extends JFrame {
 		    				session.beginTransaction(); // INICI DE LA TRANSACCIO
 		    				System.err.println("> SESSIO INICIADA CORRECTAMENT\n");
 	    					int id = Integer.parseInt(txtFIdLlibre.getText()); // RECOLLIM L'ID INDICAT EN EL TEXTFIELD
-		    				Llibre llibre = (Llibre) session.get(Llibre.class, id); // EL PROCESSEM, OBTENINT EL LLIBRE QUE CORRESPON AMB AQUEST ID
+		    				Destinacio llibre = (Destinacio) session.get(Destinacio.class, id); // EL PROCESSEM, OBTENINT EL LLIBRE QUE CORRESPON AMB AQUEST ID
 		    				
 		    				if(llibre==null) {
 		    					// MISSATGE D'ERROR QUE ES MOSTRARA SI EL ID INDICAT NO ES VALID, ES A DIR, SI INDIQUEM UN ID D'UN LLIBRE QUE NO EXISTEIX, O BE, ESCRIVIM ALGUNA LLETRA
@@ -277,7 +277,7 @@ public class Principal extends JFrame {
         						// NOMES EL ANY DE NAIXEMENT POT SER NULL, ALESHORES LI ASSIGNAREM UN N.C (NO CONSTA) SI RESULTA QUE NO LI HEM PASSAT CAP VALOR
         						strAnyNaixement = strAnyNaixement.equals("") ? "N.C" : strAnyNaixement;
         						// CREEM EL LLIBRE AMB ELS VALORS RECOLLITS
-        						Llibre llibreNou = new Llibre(strTitol,strAutor,strAnyNaixement,strAnyPublicacio,strEditorial,strNumPagines);
+        						Destinacio llibreNou = new Destinacio(strTitol,strAutor,strAnyNaixement,strAnyPublicacio,strEditorial,strNumPagines);
             					@SuppressWarnings("unused")
     							Serializable id = session.save(llibreNou);
             					session.getTransaction().commit(); // COMMIT DE LA TRANSACCIO
@@ -357,7 +357,7 @@ public class Principal extends JFrame {
 	    					session.beginTransaction(); // INICI DE LA TRANSACCIO
 	    					String decisio = "";
 	    					int id = Integer.parseInt(txtFIdLlibre.getText()); // RECOLLIM L'ID INDICAT EN EL TEXTFIELD
-		    				Llibre llibreModificat = (Llibre) session.get(Llibre.class, id); // EL PROCESSEM, OBTENINT EL LLIBRE QUE CORRESPON AMB AQUEST ID
+		    				Destinacio llibreModificat = (Destinacio) session.get(Destinacio.class, id); // EL PROCESSEM, OBTENINT EL LLIBRE QUE CORRESPON AMB AQUEST ID
 		    				
 		    				if(llibreModificat==null) {
 		    					// MISSATGE D'ERROR QUE ES MOSTRARA SI EL ID INDICAT NO ES VALID, ES A DIR, SI INDIQUEM UN ID D'UN LLIBRE QUE NO EXISTEIX, O BE, ESCRIVIM ALGUNA LLETRA
@@ -441,7 +441,7 @@ public class Principal extends JFrame {
 		    		System.err.println("> SESSIO INICIADA CORRECTAMENT\n");
 		    		
 		    		int idLlibre = Integer.parseInt(JOptionPane.showInputDialog(null, "Indica l'ID del llibre que desitjes esborrar")); // RECOLLIM L'ID INDICAT EN EL TEXTFIELD
-		    		Llibre llibreCremat = (Llibre) session.get(Llibre.class, idLlibre); // EL PROCESSEM, OBTENINT EL LLIBRE QUE CORRESPON AMB AQUEST ID
+		    		Destinacio llibreCremat = (Destinacio) session.get(Destinacio.class, idLlibre); // EL PROCESSEM, OBTENINT EL LLIBRE QUE CORRESPON AMB AQUEST ID
 		    		if(llibreCremat == null) {
 		    			// MISSATGE D'ERROR QUE ES MOSTRARA SI EL ID INDICAT NO ES VALID, ES A DIR, SI INDIQUEM UN ID D'UN LLIBRE QUE NO EXISTEIX, O BE, ESCRIVIM ALGUNA LLETRA
 		    			JOptionPane.showMessageDialog(new JFrame(), "El ID "+idLlibre+" no es valid!", "ERROR! :(", JOptionPane.ERROR_MESSAGE);
@@ -585,7 +585,7 @@ public class Principal extends JFrame {
 		// Carrega la configuracio i crea una session factory
 		System.err.println("\n>CONFIGURANT CONEXIO D'HIBERNATE ...");
 		Configuration configuration = new Configuration().configure("hibernate.cfg.xml");
-		configuration.addClass(Llibre.class);
+		configuration.addClass(Destinacio.class);
 		ServiceRegistry registry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
 		SessionFactory sessionFactory = configuration.buildSessionFactory(registry);
 		

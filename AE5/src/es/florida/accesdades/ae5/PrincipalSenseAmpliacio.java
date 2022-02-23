@@ -26,7 +26,7 @@ public class PrincipalSenseAmpliacio {
 		biblioteca = session.createQuery("FROM Llibre").list();
 		System.out.println("----- LLISTA DE LLIBRES -----");
 		for (Object obj : biblioteca) {
-			Llibre llibre = (Llibre) obj;
+			Destinacio llibre = (Destinacio) obj;
 			System.out.println(llibre.getIdentificador()+" - "+llibre.getTitol());
 		} // end-for
 		
@@ -37,7 +37,7 @@ public class PrincipalSenseAmpliacio {
 		session.beginTransaction();
 		System.err.println("> SESSIO INICIADA CORRECTAMENT\n");
 		
-		Llibre llibre = (Llibre) session.get(Llibre.class, idLlibre);
+		Destinacio llibre = (Destinacio) session.get(Destinacio.class, idLlibre);
 		if(llibre==null) {
 			System.err.println("ERROR! No s'ha trobat cap llibre amb l'ID: "+idLlibre);
 		} else {
@@ -81,7 +81,7 @@ public class PrincipalSenseAmpliacio {
 			System.out.print("Num. Pagines: ");
 			String strNumPagines = sc.nextLine();	
 		
-			Llibre llibreNou = new Llibre(strTitol,strAutor,strAnyNaixement,strAnyPublicacio,strEditorial,strNumPagines);
+			Destinacio llibreNou = new Destinacio(strTitol,strAutor,strAnyNaixement,strAnyPublicacio,strEditorial,strNumPagines);
 			
 			System.out.println("----- DADES DEL NOU LLIBRE -----"
 					+ "\nTitol: "+llibreNou.getTitol()+
@@ -109,7 +109,7 @@ public class PrincipalSenseAmpliacio {
 			System.err.println("> SESSIO INICIADA CORRECTAMENT\n");
 			
 			System.out.print("Indica l'ID del llibre que vols actualitzar: ");
-			Llibre llibreActualitzat = (Llibre) session.load(Llibre.class, Integer.parseInt(sc.nextLine()));
+			Destinacio llibreActualitzat = (Destinacio) session.load(Destinacio.class, Integer.parseInt(sc.nextLine()));
 			
 			System.out.print("Titol: ");
 			llibreActualitzat.setTitol(sc.nextLine());
@@ -143,7 +143,7 @@ public class PrincipalSenseAmpliacio {
 		// Carrega la configuracio i crea una session factory
 		System.err.println("\n> CONFIGURANT CONEXIO D'HIBERNATE");
 		Configuration configuration = new Configuration().configure("hibernate.cfg.xml");
-		configuration.addClass(Llibre.class);
+		configuration.addClass(Destinacio.class);
 		ServiceRegistry registry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
 		SessionFactory sessionFactory = configuration.buildSessionFactory(registry);
 		
@@ -153,7 +153,7 @@ public class PrincipalSenseAmpliacio {
 		session.beginTransaction();
 		System.err.println("> SESSIO INICIADA CORRECTAMENT\n");
 		
-		Llibre llibreCremat = new Llibre();
+		Destinacio llibreCremat = new Destinacio();
 		llibreCremat.setIdentificador(idLlibre);
 		session.delete(llibreCremat);
 
@@ -166,7 +166,7 @@ public class PrincipalSenseAmpliacio {
 		// Carrega la configuracio i crea una session factory
 		System.err.println("\n> CONFIGURANT CONEXIO D'HIBERNATE");
 		Configuration configuration = new Configuration().configure("hibernate.cfg.xml");
-		configuration.addClass(Llibre.class);
+		configuration.addClass(Destinacio.class);
 		ServiceRegistry registry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
 		SessionFactory sessionFactory = configuration.buildSessionFactory(registry);
 		

@@ -1,15 +1,15 @@
 package es.florida.accesdades.ae5;
 
-public class Llibre {
+public class Destinacio {
 	// identificador, titol, autor, any publicacio, editorial, num pagines
 	private int identificador;
 	private String titol, autor, editorial, anyPublicacio, numPagines, anyNaixement;
 	
-	public Llibre() {
+	public Destinacio() {
 		super();
 	}
 	
-	public Llibre(String titol, String autor, String anyNaixement, String anyPublicacio, String editorial, String numPagines) {
+	public Destinacio(String titol, String autor, String anyNaixement, String anyPublicacio, String editorial, String numPagines) {
 		this.titol = titol;
 		this.autor = autor;
 		this.anyNaixement = anyNaixement;
@@ -19,7 +19,7 @@ public class Llibre {
 	}
 	
 	
-	public Llibre(int identificador, String titol, String autor, String anyNaixement, String anyPublicacio, String editorial, String numPagines) {
+	public Destinacio(int identificador, String titol, String autor, String anyNaixement, String anyPublicacio, String editorial, String numPagines) {
 		this.identificador = identificador;
 		this.titol = titol;
 		this.autor = autor;
